@@ -1,6 +1,6 @@
 from base_generator import BaseGenerator
 from generator import util
-from util import TAB, TAB2, TAB3
+from util import TAB, TAB2, TAB3, TAB4
 
 
 class CSGenerator(BaseGenerator):
@@ -165,6 +165,11 @@ class CSGenerator(BaseGenerator):
             field_name = util.format_to_camel(field_name)
             if field_type == 'string' and _[1]:
                 f.write('%swriter.Write(wrapString(%s, %i));\n' % (TAB3, field_name, _[1]))
+            if field_type == 'int[]':
+                f.write('%swriter.Write((int)%s.Length);\n' % (TAB3, field_name))
+                f.write('%sfor (int i = 0; i < %s.Length; i++)\n' % (TAB3, field_name))
+                f.write('%swriter.Write(%s[i]);\n' % (TAB4, field_name))
+                f.write('\n')
             else:
                 f.write('%swriter.Write(%s);\n' % (TAB3, field_name, ))
 
