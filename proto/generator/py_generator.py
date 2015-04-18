@@ -7,7 +7,7 @@ class PYGenerator(BaseGenerator):
     def _before_generating(self):
         self._comment = '#'
         self._base_class_name = 'BaseMessage'
-        self._get_id_method_name = 'get_id'
+        self._get_id_method_name = 'id'
 
     #
     # Upper level routines override
@@ -116,10 +116,12 @@ class PYGenerator(BaseGenerator):
 
         f = self._file
 
-        cls_name = util.format_to_pascal(descriptor[0])
         f.write('\n')
         f.write('%sdef unpack_from(self, raw):\n' % TAB)
         f.write('%svalues = self._struct.unpack(raw)\n' % TAB2)
+        f.write('%sself._length = values[0]\n' % TAB2)
+        f.write('%sself._real_id = values[1]\n' % TAB2)
+        f.write('\n')
 
         l = len(descriptor)
         struct_i = 2
@@ -131,5 +133,28 @@ class PYGenerator(BaseGenerator):
                 f.write('%sself.%s = values[%i].strip()\n' % (TAB2, field_name, struct_i, ))
                 struct_i += 1
             else:
-                f.write('%sself%s = values[%i]\n' % (TAB2, field_name, struct_i, ))
+                f.write('%sself.%s = values[%i]\n' % (TAB2, field_name, struct_i, ))
                 struct_i += 1
+
+    def _message_send_constructor(self, descriptor, m_type):
+        if m_type == 'client':
+            return
+
+        f = self._file
+
+        f.write('\n')
+        f.write('%sdef encode_self(self):\n' % TAB)
+        f.write('%s# noinspection PyListCreation\n' % TAB2)
+        f.write('%svalues = [self._struct.size - 5, self.%s]\n' % (TAB2, self._get_id_method_name, ))
+
+        l = len(descriptor)
+        for field_i in xrange(2, l):
+            field_name = descriptor[field_i][0]
+            field_type = descriptor[field_i][1]
+            if field_type == 'string':
+                field_fixed_size = descriptor[field_i][2]
+                f.write('%svalues.append(%i)\n' % (TAB2, field_fixed_size, ))
+
+            f.write('%svalues.append(self.%s)\n' % (TAB2, field_name))
+
+        f.write('%sreturn self._struct.pack(*values)\n' % TAB2)

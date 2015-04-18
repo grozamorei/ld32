@@ -18,7 +18,7 @@ class EnterWorldStatus():
 
 class BaseMessage():
     @property
-    def get_id(self):
+    def id(self):
         raise NotImplementedError()
 
     def __init__(self):
@@ -31,7 +31,7 @@ class BaseMessage():
 
 class DebugPackage(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 0
 
     def __init__(self):
@@ -42,15 +42,27 @@ class DebugPackage(BaseMessage):
         self._format += " b 50s b 120s"
         self._struct = struct.Struct(self._format)
 
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [self._struct.size - 5, self.id]
+        values.append(50)
+        values.append(self.sender)
+        values.append(120)
+        values.append(self.message)
+        return self._struct.pack(*values)
+
     def unpack_from(self, raw):
         values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
         self.sender = values[3].strip()
         self.message = values[5].strip()
 
 
 class RequestEnterWorld(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 1
 
     def __init__(self):
@@ -63,13 +75,16 @@ class RequestEnterWorld(BaseMessage):
 
     def unpack_from(self, raw):
         values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
         self.user_name = values[3].strip()
         self.world_name = values[5].strip()
 
 
 class RequestCreateWorld(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 2
 
     def __init__(self):
@@ -86,17 +101,20 @@ class RequestCreateWorld(BaseMessage):
 
     def unpack_from(self, raw):
         values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
         self.user_name = values[3].strip()
         self.world_name = values[5].strip()
-        selfworld_step = values[6]
-        selfworld_size_x = values[7]
-        selfworld_size_y = values[8]
-        selfworld_population = values[9]
+        self.world_step = values[6]
+        self.world_size_x = values[7]
+        self.world_size_y = values[8]
+        self.world_population = values[9]
 
 
 class Welcome(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 3
 
     def __init__(self):
@@ -107,10 +125,19 @@ class Welcome(BaseMessage):
         self._format += " b 50s b 50s"
         self._struct = struct.Struct(self._format)
 
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [self._struct.size - 5, self.id]
+        values.append(50)
+        values.append(self.available_name)
+        values.append(50)
+        values.append(self.random_world)
+        return self._struct.pack(*values)
+
 
 class ResponseAuthorize(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 4
 
     def __init__(self):
@@ -121,10 +148,18 @@ class ResponseAuthorize(BaseMessage):
         self._format += " b b 10s"
         self._struct = struct.Struct(self._format)
 
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [self._struct.size - 5, self.id]
+        values.append(self.status)
+        values.append(10)
+        values.append(self.token)
+        return self._struct.pack(*values)
+
 
 class ResponseEnterWorld(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 5
 
     def __init__(self):
@@ -134,10 +169,16 @@ class ResponseEnterWorld(BaseMessage):
         self._format += " b"
         self._struct = struct.Struct(self._format)
 
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [self._struct.size - 5, self.id]
+        values.append(self.status)
+        return self._struct.pack(*values)
+
 
 class WorldData(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 6
 
     def __init__(self):
@@ -152,10 +193,21 @@ class WorldData(BaseMessage):
         self._format += " h h h h"
         self._struct = struct.Struct(self._format)
 
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [self._struct.size - 5, self.id]
+        values.append(self.world_step)
+        values.append(self.size_x)
+        values.append(self.size_y)
+        values.append(self.max_population)
+        values.append(self.players_ids)
+        values.append(self.players_names)
+        return self._struct.pack(*values)
+
 
 class RoomSnapshot(BaseMessage):
     @property
-    def get_id(self):
+    def id(self):
         return 7
 
     def __init__(self):
@@ -164,3 +216,9 @@ class RoomSnapshot(BaseMessage):
 
         self._format += ""
         self._struct = struct.Struct(self._format)
+
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [self._struct.size - 5, self.id]
+        values.append(self.snapshot)
+        return self._struct.pack(*values)

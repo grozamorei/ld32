@@ -6,6 +6,7 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application
 from tornado.websocket import WebSocketHandler
 
+
 class WSHandler(WebSocketHandler):
     def data_received(self, chunk):
         print 'data received: ' + chunk
@@ -15,15 +16,15 @@ class WSHandler(WebSocketHandler):
         print 'new connection'
 
     def on_message(self, message):
-        self.write_message(message, True)
-
         d = DebugPackage()
         d.unpack_from(message)
         print d
-        # print 'message received %s : + i' % (message, )
+
+        encoded = d.encode_self()
+        self.write_message(encoded, True)
 
     def on_close(self):
-      print 'connection closed'
+        print 'connection closed'
 
     def check_origin(self, origin):
         return True
@@ -44,5 +45,5 @@ def start(port):
 
 if __name__ == '__main__':
     logging.basicConfig(format='%(levelname)s::%(asctime)s {%(module)s:%(lineno)d} :: %(message)s ::',
-                            datefmt='[%d.%m.%Y %I:%M:%S]', level=20)
+                        datefmt='[%d.%m.%Y %I:%M:%S]', level=20)
     start(3000)
