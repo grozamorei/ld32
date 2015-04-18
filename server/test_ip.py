@@ -1,5 +1,5 @@
 import logging
-import struct
+from proto.protocol import DebugPackage
 from tornado.httpserver import HTTPServer
 
 from tornado.ioloop import IOLoop
@@ -17,9 +17,10 @@ class WSHandler(WebSocketHandler):
     def on_message(self, message):
         self.write_message(message, True)
 
-        len = message[:4]
-        zaza = struct.unpack('i b b 50s b 50s', message)
-        print 'message received %s : + i' % (message, )
+        d = DebugPackage()
+        d.unpack_from(message)
+        print d
+        # print 'message received %s : + i' % (message, )
 
     def on_close(self):
       print 'connection closed'

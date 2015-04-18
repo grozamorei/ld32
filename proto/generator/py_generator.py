@@ -8,8 +8,6 @@ class PYGenerator(BaseGenerator):
         self._comment = '#'
         self._base_class_name = 'BaseMessage'
         self._get_id_method_name = 'get_id'
-        self._send_stream_creator_name = '_init_send_stream'
-        self._receive_stream_creator_name = '_init_receive_stream'
 
     #
     # Upper level routines override
@@ -59,24 +57,37 @@ class PYGenerator(BaseGenerator):
         f.write('\n')
 
         f.write('%sdef __init__(self):\n' % TAB)
-        f.write('%s_length = -1\n' % TAB2)
-        f.write('%s_real_id = 255\n' % TAB2)
+        f.write('%sself._length = -1\n' % TAB2)
+        f.write('%sself._real_id = 255\n' % TAB2)
         f.write('\n')
-        f.write('%s_encode_format = "i b"\n' % TAB2)
-        f.write('%s_decode_format = "i b"\n' % TAB2)
-
+        f.write('%sself._format = "<i b"\n' % TAB2)
+        f.write('%sself._struct = None\n' % TAB2)
 
     #
     # Message sub level routines override
     #
+
     def _message_class_header(self, descriptor, message_id):
         f = self._file
 
         def write_field_definition(field_name, field_type, *_):
             default_value = util.default_for_type(field_type, self._custom_enums)
             if field_type in self._custom_enums:
-                default_value = util.format_to_pascal(self._custom_enums[field_type]['cls']) + '.' + default_value.upper()
-            f.write('%s%s = %s\n' % (TAB2, field_name, default_value, ))
+                default_value = util.format_to_pascal(
+                    self._custom_enums[field_type]['cls']) + '.' + default_value.upper()
+            f.write('%sself.%s = %s\n' % (TAB2, field_name, default_value, ))
+
+        def add_field_format(field_name, field_type, *_):
+            if field_type == 'byte':
+                f.write(' b')
+            elif field_type == 'short':
+                f.write(' h')
+            elif field_type == 'int':
+                f.write(' i')
+            elif field_type == 'string':
+                f.write(' b %is' % _[1])
+            elif field_type in self._custom_enums:
+                f.write(' b')
 
         cls_name = util.format_to_pascal(descriptor[0])
         f.write('\n')
@@ -91,3 +102,34 @@ class PYGenerator(BaseGenerator):
         f.write('%sdef __init__(self):\n' % TAB)
         f.write('%s%s.__init__(self)\n' % (TAB2, self._base_class_name, ))
         util.iterate_message_fields(descriptor, write_field_definition)
+
+        f.write('\n')
+
+        f.write('%sself._format += "' % TAB2)
+        util.iterate_message_fields(descriptor, add_field_format)
+        f.write('"\n')
+        f.write('%sself._struct = struct.Struct(self._format)\n' % TAB2)
+
+    def _message_receive_constructor(self, descriptor, m_type):
+        if m_type == 'server':
+            return
+
+        f = self._file
+
+        cls_name = util.format_to_pascal(descriptor[0])
+        f.write('\n')
+        f.write('%sdef unpack_from(self, raw):\n' % TAB)
+        f.write('%svalues = self._struct.unpack(raw)\n' % TAB2)
+
+        l = len(descriptor)
+        struct_i = 2
+        for field_i in xrange(2, l):
+            field_name = descriptor[field_i][0]
+            field_type = descriptor[field_i][1]
+            if field_type == 'string':
+                struct_i += 1
+                f.write('%sself.%s = values[%i].strip()\n' % (TAB2, field_name, struct_i, ))
+                struct_i += 1
+            else:
+                f.write('%sself%s = values[%i]\n' % (TAB2, field_name, struct_i, ))
+                struct_i += 1

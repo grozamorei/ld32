@@ -22,11 +22,11 @@ class BaseMessage():
         raise NotImplementedError()
 
     def __init__(self):
-        _length = -1
-        _real_id = 255
+        self._length = -1
+        self._real_id = 255
 
-        _encode_format = "i b"
-        _decode_format = "i b"
+        self._format = "<i b"
+        self._struct = None
 
 
 class DebugPackage(BaseMessage):
@@ -36,8 +36,16 @@ class DebugPackage(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        sender = ""
-        message = ""
+        self.sender = ""
+        self.message = ""
+
+        self._format += " b 50s b 120s"
+        self._struct = struct.Struct(self._format)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self.sender = values[3].strip()
+        self.message = values[5].strip()
 
 
 class RequestEnterWorld(BaseMessage):
@@ -47,8 +55,16 @@ class RequestEnterWorld(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        user_name = ""
-        world_name = ""
+        self.user_name = ""
+        self.world_name = ""
+
+        self._format += " b 50s b 50s"
+        self._struct = struct.Struct(self._format)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self.user_name = values[3].strip()
+        self.world_name = values[5].strip()
 
 
 class RequestCreateWorld(BaseMessage):
@@ -58,12 +74,24 @@ class RequestCreateWorld(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        user_name = ""
-        world_name = ""
-        world_step = -1
-        world_size_x = -1
-        world_size_y = -1
-        world_population = -1
+        self.user_name = ""
+        self.world_name = ""
+        self.world_step = -1
+        self.world_size_x = -1
+        self.world_size_y = -1
+        self.world_population = -1
+
+        self._format += " b 50s b 50s h h h h"
+        self._struct = struct.Struct(self._format)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self.user_name = values[3].strip()
+        self.world_name = values[5].strip()
+        selfworld_step = values[6]
+        selfworld_size_x = values[7]
+        selfworld_size_y = values[8]
+        selfworld_population = values[9]
 
 
 class Welcome(BaseMessage):
@@ -73,8 +101,11 @@ class Welcome(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        available_name = ""
-        random_world = ""
+        self.available_name = ""
+        self.random_world = ""
+
+        self._format += " b 50s b 50s"
+        self._struct = struct.Struct(self._format)
 
 
 class ResponseAuthorize(BaseMessage):
@@ -84,8 +115,11 @@ class ResponseAuthorize(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        status = AuthStatus.NONE
-        token = ""
+        self.status = AuthStatus.NONE
+        self.token = ""
+
+        self._format += " b b 10s"
+        self._struct = struct.Struct(self._format)
 
 
 class ResponseEnterWorld(BaseMessage):
@@ -95,7 +129,10 @@ class ResponseEnterWorld(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        status = EnterWorldStatus.NONE
+        self.status = EnterWorldStatus.NONE
+
+        self._format += " b"
+        self._struct = struct.Struct(self._format)
 
 
 class WorldData(BaseMessage):
@@ -105,12 +142,15 @@ class WorldData(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        world_step = -1
-        size_x = -1
-        size_y = -1
-        max_population = -1
-        players_ids = None
-        players_names = None
+        self.world_step = -1
+        self.size_x = -1
+        self.size_y = -1
+        self.max_population = -1
+        self.players_ids = None
+        self.players_names = None
+
+        self._format += " h h h h"
+        self._struct = struct.Struct(self._format)
 
 
 class RoomSnapshot(BaseMessage):
@@ -120,4 +160,7 @@ class RoomSnapshot(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        snapshot = None
+        self.snapshot = None
+
+        self._format += ""
+        self._struct = struct.Struct(self._format)
