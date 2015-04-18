@@ -26,14 +26,9 @@
     ],
 
     [
-        "request_create_world",
+        "debug_deploy_configuration",
         "client",
-        [ "user_name", "string", 50 ],
-        [ "world_name", "string", 50 ],
-        [ "world_step", "short", 50 ],
-        [ "world_size_x", "short" ],
-        [ "world_size_y", "short" ],
-        [ "world_population", "short" ]
+        [ "configuration", "int[]" ]
     ],
 
 

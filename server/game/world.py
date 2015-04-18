@@ -39,3 +39,7 @@ class World():
             del self._users[user.byte_id]
         else:
             LOGGER.error('removing already absent user! %s ' % user.name)
+
+    def debug_deploy_configuration(self, configuration):
+        # LOGGER.info('con')
+        pass

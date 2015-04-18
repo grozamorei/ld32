@@ -1,7 +1,8 @@
 import logging
 import struct
 from tornado.websocket import WebSocketHandler
-from proto.protocol import Welcome, DebugPackage, RequestEnterWorld, ResponseEnterWorld, EnterWorldStatus
+from proto.protocol import Welcome, DebugPackage, RequestEnterWorld, ResponseEnterWorld, EnterWorldStatus, \
+    DebugDeployConfiguration
 from game.user import User
 
 LOGGER = logging.getLogger(__name__.split('.')[-1])
@@ -18,6 +19,8 @@ class WSHandler(WebSocketHandler):
         self._cluster = application.settings['cluster']
         self._status = _AuthStatus.UNKNOWN
         self._partial_message = None
+        self._user = None
+        self._world = None
         LOGGER.debug('Socket created')
 
     def data_received(self, chunk):
@@ -58,8 +61,8 @@ class WSHandler(WebSocketHandler):
             LOGGER.info('Debug package from %s with %s' % (d.sender, d.message, ))
             return
 
+        message_id = struct.unpack_from('b', message[4])[0]
         if self._status == _AuthStatus.WELCOME_SEND:
-            message_id = struct.unpack_from('b', message[4])[0]
             if message_id == RequestEnterWorld.ID:
                 res = ResponseEnterWorld()
                 req_enter = RequestEnterWorld()
@@ -69,7 +72,9 @@ class WSHandler(WebSocketHandler):
                 world = req_enter.world_name
                 if self._cluster.can_enter(name, world):
                     u = User(self, name)
+                    self._user = u
                     if self._cluster.enter(u, world):
+                        self._world = u.world
                         LOGGER.info('User %s entering world %s' % (u.name, u.world._name))
                         res.status = EnterWorldStatus.ENTER_SUCCESS
                         res.my_id = u.byte_id
@@ -85,7 +90,13 @@ class WSHandler(WebSocketHandler):
                     res.status = EnterWorldStatus.NONE
                     self.write_message(res.encode_self(), True)
         elif self._status == _AuthStatus.AUTHORIZED:
-            LOGGER.info('message from logged in user: ')
+            if message_id == DebugDeployConfiguration.ID:
+                LOGGER.info('deploy configuration from user: %s' % self._user.name)
+                deploy = DebugDeployConfiguration()
+                deploy.unpack_from(message)
+                self._world.debug_deploy_configuration(deploy.configuration)
+            else:
+                LOGGER.warning('wrong order messages after authorize. got: %i' % message_id)
         else:
             LOGGER.warning('unknown state : %i' % self._status)
 

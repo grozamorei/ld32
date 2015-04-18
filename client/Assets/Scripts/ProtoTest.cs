@@ -107,35 +107,20 @@ namespace proto
         }
     }
 
-    public class RequestCreateWorld : BaseMessage
+    public class DebugDeployConfiguration : BaseMessage
     {
         public static byte ID { get { return 2; } }
         public override byte getID() { return 2; }
-        public readonly string userName;
-        public readonly string worldName;
-        public readonly short worldStep;
-        public readonly short worldSizeX;
-        public readonly short worldSizeY;
-        public readonly short worldPopulation;
+        public readonly int[] configuration;
     
-        public RequestCreateWorld( string userName, string worldName, short worldStep, short worldSizeX, short worldSizeY, short worldPopulation )
+        public DebugDeployConfiguration( int[] configuration )
         {
             initSendStream();
-            this.userName = userName;
-            this.worldName = worldName;
-            this.worldStep = worldStep;
-            this.worldSizeX = worldSizeX;
-            this.worldSizeY = worldSizeY;
-            this.worldPopulation = worldPopulation;
+            this.configuration = configuration;
         }
         public byte[] encode()
         {
-            writer.Write(wrapString(userName, 50));
-            writer.Write(wrapString(worldName, 50));
-            writer.Write(worldStep);
-            writer.Write(worldSizeX);
-            writer.Write(worldSizeY);
-            writer.Write(worldPopulation);
+            writer.Write(configuration);
             return wrapCommand();
         }
     }

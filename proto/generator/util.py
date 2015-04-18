@@ -6,7 +6,7 @@ TAB3 = '            '
 TAB4 = '                '
 
 __NUMERIC = ['int', 'short', 'byte']
-__NULLABLE = ['string[]', 'byte[]', 'short[]']
+__NULLABLE = ['string[]', 'byte[]', 'short[]', 'int[]']
 
 
 def format_to_pascal(value):

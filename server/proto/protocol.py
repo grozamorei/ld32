@@ -95,7 +95,7 @@ class RequestEnterWorld(BaseMessage):
         self.world_name = values[5].strip()
 
 
-class RequestCreateWorld(BaseMessage):
+class DebugDeployConfiguration(BaseMessage):
     ID = 2
 
     @property
@@ -104,14 +104,9 @@ class RequestCreateWorld(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        self.user_name = ""
-        self.world_name = ""
-        self.world_step = -1
-        self.world_size_x = -1
-        self.world_size_y = -1
-        self.world_population = -1
+        self.configuration = None
 
-        self._format += " b 50s b 50s h h h h"
+        self._format += ""
         self._struct = struct.Struct(self._format)
 
     def unpack_from(self, raw):
@@ -119,12 +114,7 @@ class RequestCreateWorld(BaseMessage):
         self._length = values[0]
         self._real_id = values[1]
 
-        self.user_name = values[3].strip()
-        self.world_name = values[5].strip()
-        self.world_step = values[6]
-        self.world_size_x = values[7]
-        self.world_size_y = values[8]
-        self.world_population = values[9]
+        self.configuration = values[2]
 
 
 class Welcome(BaseMessage):
