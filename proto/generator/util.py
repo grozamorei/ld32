@@ -5,7 +5,7 @@ TAB2 = '        '
 TAB3 = '            '
 
 __NUMERIC = ['int', 'short', 'byte']
-__NULLABLE = ['string', 'string[]', 'byte[]', 'short[]']
+__NULLABLE = ['string[]', 'byte[]', 'short[]']
 
 
 def format_to_pascal(value):
@@ -39,7 +39,7 @@ def iterate_message_fields(message_descriptor, iterator):
     l = len(message_descriptor)
     for f in xrange(2, l):
         is_last = f == l - 1
-        field_name = format_to_camel(message_descriptor[f][0])
+        field_name = message_descriptor[f][0]
         field_type = message_descriptor[f][1]
         if 'string' in field_type:
             field_fixed_size = message_descriptor[f][2]
@@ -51,6 +51,8 @@ def iterate_message_fields(message_descriptor, iterator):
 def default_for_type(type_name, custom_enums):
     if type_name in __NUMERIC:
         return '-1'
+    elif type_name == 'string':
+        return '""'
     elif type_name in __NULLABLE:
         return None
     elif type_name == 'bool':
