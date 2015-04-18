@@ -30,6 +30,8 @@ class BaseMessage():
 
 
 class DebugPackage(BaseMessage):
+    ID = 0
+
     @property
     def id(self):
         return 0
@@ -61,6 +63,8 @@ class DebugPackage(BaseMessage):
 
 
 class RequestEnterWorld(BaseMessage):
+    ID = 1
+
     @property
     def id(self):
         return 1
@@ -83,6 +87,8 @@ class RequestEnterWorld(BaseMessage):
 
 
 class RequestCreateWorld(BaseMessage):
+    ID = 2
+
     @property
     def id(self):
         return 2
@@ -113,6 +119,8 @@ class RequestCreateWorld(BaseMessage):
 
 
 class Welcome(BaseMessage):
+    ID = 3
+
     @property
     def id(self):
         return 3
@@ -136,6 +144,8 @@ class Welcome(BaseMessage):
 
 
 class ResponseAuthorize(BaseMessage):
+    ID = 4
+
     @property
     def id(self):
         return 4
@@ -158,6 +168,8 @@ class ResponseAuthorize(BaseMessage):
 
 
 class ResponseEnterWorld(BaseMessage):
+    ID = 5
+
     @property
     def id(self):
         return 5
@@ -177,35 +189,38 @@ class ResponseEnterWorld(BaseMessage):
 
 
 class WorldData(BaseMessage):
+    ID = 6
+
     @property
     def id(self):
         return 6
 
     def __init__(self):
         BaseMessage.__init__(self)
+        self.name = ""
         self.world_step = -1
         self.size_x = -1
         self.size_y = -1
         self.max_population = -1
-        self.players_ids = None
-        self.players_names = None
 
-        self._format += " h h h h"
+        self._format += " b 50s h h h h"
         self._struct = struct.Struct(self._format)
 
     def encode_self(self):
         # noinspection PyListCreation
         values = [self._struct.size - 5, self.id]
+        values.append(50)
+        values.append(self.name)
         values.append(self.world_step)
         values.append(self.size_x)
         values.append(self.size_y)
         values.append(self.max_population)
-        values.append(self.players_ids)
-        values.append(self.players_names)
         return self._struct.pack(*values)
 
 
 class RoomSnapshot(BaseMessage):
+    ID = 7
+
     @property
     def id(self):
         return 7

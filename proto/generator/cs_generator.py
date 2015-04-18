@@ -116,6 +116,7 @@ class CSGenerator(BaseGenerator):
         cls_name = util.format_to_pascal(descriptor[0])
         f.write('%spublic class %s : %s\n' % (TAB, cls_name, self._base_class_name, ))
         f.write('%s{\n' % TAB)
+        f.write('%spublic static byte ID { get { return %i; } }\n' % (TAB2, message_id, ))
         f.write('%spublic override byte %s() { return %i; }\n' % (TAB2, self._get_id_method_name, message_id, ))
 
         if len(descriptor) <= 2:

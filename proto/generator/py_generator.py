@@ -93,6 +93,10 @@ class PYGenerator(BaseGenerator):
         f.write('\n')
         f.write('\n')
         f.write('class %s(%s):\n' % (cls_name, self._base_class_name, ))
+        f.write('%sID = %i\n' % (TAB, message_id))
+
+        f.write('\n')
+
         f.write('%s@property\n' % TAB)
         f.write('%sdef %s(self):\n' % (TAB, self._get_id_method_name, ))
         f.write('%sreturn %i\n' % (TAB2, message_id, ))

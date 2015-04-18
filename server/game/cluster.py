@@ -21,7 +21,7 @@ class WorldCluster():
             if w.can_accept:
                 return world_name
 
-        new_name = 'world' + self._next_world
+        new_name = 'world' + str(self._next_world)
         self._next_world += 1
         new_world = World(new_name, 32, 32, 500, 10)
         self._worlds.setdefault(new_name, new_world)
@@ -29,7 +29,13 @@ class WorldCluster():
 
     def get_free_name(self):
         self._next_user += 1
-        return 'user' + self._next_user
+        return 'user' + str(self._next_user)
+
+    def can_enter(self, user_name, world_name):
+        return True
+
+    def enter(self, user, world_name):
+        return True
 
     def update(self):
         new_time = datetime.now().microsecond

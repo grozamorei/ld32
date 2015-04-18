@@ -74,12 +74,11 @@
     [
         "world_data",
         "server",
+        [ "name", "string", 50 ],
         [ "world_step", "short" ],
         [ "size_x", "short" ],
         [ "size_y", "short" ],
-        [ "max_population", "short" ],
-        [ "players_ids", "byte[]" ],
-        [ "players_names", "string[]", 50 ]
+        [ "max_population", "short" ]
     ],
 
     [

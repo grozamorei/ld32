@@ -71,6 +71,7 @@ namespace proto
 
     public class DebugPackage : BaseMessage
     {
+        public static byte ID { get { return 0; } }
         public override byte getID() { return 0; }
         public readonly string sender;
         public readonly string message;
@@ -97,6 +98,7 @@ namespace proto
 
     public class RequestEnterWorld : BaseMessage
     {
+        public static byte ID { get { return 1; } }
         public override byte getID() { return 1; }
         public readonly string userName;
         public readonly string worldName;
@@ -117,6 +119,7 @@ namespace proto
 
     public class RequestCreateWorld : BaseMessage
     {
+        public static byte ID { get { return 2; } }
         public override byte getID() { return 2; }
         public readonly string userName;
         public readonly string worldName;
@@ -149,6 +152,7 @@ namespace proto
 
     public class Welcome : BaseMessage
     {
+        public static byte ID { get { return 3; } }
         public override byte getID() { return 3; }
         public readonly string availableName;
         public readonly string randomWorld;
@@ -163,6 +167,7 @@ namespace proto
 
     public class ResponseAuthorize : BaseMessage
     {
+        public static byte ID { get { return 4; } }
         public override byte getID() { return 4; }
         public readonly AuthStatus status;
         public readonly string token;
@@ -177,6 +182,7 @@ namespace proto
 
     public class ResponseEnterWorld : BaseMessage
     {
+        public static byte ID { get { return 5; } }
         public override byte getID() { return 5; }
         public readonly EnterWorldStatus status;
     
@@ -189,17 +195,18 @@ namespace proto
 
     public class WorldData : BaseMessage
     {
+        public static byte ID { get { return 6; } }
         public override byte getID() { return 6; }
+        public readonly string name;
         public readonly short worldStep;
         public readonly short sizeX;
         public readonly short sizeY;
         public readonly short maxPopulation;
-        public readonly byte[] playersIds;
-        public readonly string[] playersNames;
     
         public WorldData(byte[] source)
         {
             initReceiveStream(source);
+            name = reader.ReadString();
             worldStep = reader.ReadInt16();
             sizeX = reader.ReadInt16();
             sizeY = reader.ReadInt16();
@@ -209,6 +216,7 @@ namespace proto
 
     public class RoomSnapshot : BaseMessage
     {
+        public static byte ID { get { return 7; } }
         public override byte getID() { return 7; }
         public readonly byte[] snapshot;
     
