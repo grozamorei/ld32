@@ -30,6 +30,8 @@ namespace net
         private byte[] _partial_message = null;
         
         private MainProxy _game;
+        private string _lastNameAttempt;
+        private string _lastWorldAttempt;
         
         IEnumerator Start ()
         {
@@ -76,6 +78,12 @@ namespace net
                 return;
             }
             
+            if (data[4] == DebugPackage.ID)
+            {
+                var dm = new DebugPackage(data);
+                Debug.Log("debug message from: " + dm.sender + "::" + dm.message);
+            }
+            
             if (_state == ConnectionState.CONNECTED)
             {
                 if (data[4] == Welcome.ID)
@@ -96,8 +104,10 @@ namespace net
                     var res = new ResponseEnterWorld(data);
                     if (res.status == EnterWorldStatus.ENTER_SUCCESS)
                     {
-                        Debug.Log("authorize success!!");
+                        Debug.Log("authorize success at world " + _lastWorldAttempt + 
+                        " with name " + _lastNameAttempt + "::" + res.myId.ToString());
                         _state = ConnectionState.AUTHORIZED;
+                        _game.rememberMe(_lastNameAttempt, res.myId, _lastWorldAttempt);
                     } 
                     else
                     {
@@ -120,6 +130,8 @@ namespace net
                     var wData = new WorldData(data);
                     _game.initializeWorld(wData);
                     _state = ConnectionState.IN_WORLD;
+                    
+                    _socket.Send(new DebugPackage(_game.myName, "привет друзья").encode());
                 }
                 else
                 {
@@ -134,6 +146,8 @@ namespace net
             if (_state != ConnectionState.WELCOMED)
                 throw new UnityException("cannot call authorize in that state : " + _state.ToString());
                 
+            _lastNameAttempt = name;
+            _lastWorldAttempt = world;
             var auth = new RequestEnterWorld(name, world);
             _socket.Send(auth.encode());
             _state = ConnectionState.AUTHORIZING;

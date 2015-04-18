@@ -55,12 +55,6 @@ class WSHandler(WebSocketHandler):
             LOGGER.error('AHAHAHAH CHTO ETO U NAS NAKONEC TO')
             self.close(500, "prosti paren'")
 
-        if message[4] == DebugPackage.ID:
-            d = DebugPackage()
-            d.unpack_from(message)
-            LOGGER.info('Debug package from %s with %s' % (d.sender, d.message, ))
-            return
-
         message_id = struct.unpack_from('b', message[4])[0]
         if self._status == _AuthStatus.WELCOME_SEND:
             if message_id == RequestEnterWorld.ID:
@@ -95,6 +89,13 @@ class WSHandler(WebSocketHandler):
                 deploy = DebugDeployConfiguration()
                 deploy.unpack_from(message)
                 self._world.debug_deploy_configuration(deploy.configuration)
+            elif message_id == DebugPackage.ID:
+                d = DebugPackage()
+                d.unpack_from(message)
+                LOGGER.info('Debug package from %s with %s' % (d.sender, d.message, ))
+
+                if self._status == _AuthStatus.AUTHORIZED:
+                    self._user.world.debug_broadcast(d.encode_self())
             else:
                 LOGGER.warning('wrong order messages after authorize. got: %i' % message_id)
         else:
@@ -102,6 +103,8 @@ class WSHandler(WebSocketHandler):
 
     def on_close(self):
         LOGGER.info('Connection closed: ')
+        if self._status == _AuthStatus.AUTHORIZED:
+            self._world.remove_user(self._user)
 
     def check_origin(self, origin):
         return True

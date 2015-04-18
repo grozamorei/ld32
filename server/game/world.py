@@ -31,6 +31,7 @@ class World():
         self._free_ids = self._free_ids[1:]
         user.initialize_in_world(self, u_id)
         self._users.setdefault(u_id, user)
+        LOGGER.info('ADDED user [%i]:%s. new population: %i' % (u_id, user.name, len(self._users), ))
 
     def remove_user(self, user):
         u_id = user.byte_id
@@ -39,7 +40,12 @@ class World():
             del self._users[user.byte_id]
         else:
             LOGGER.error('removing already absent user! %s ' % user.name)
+        LOGGER.info('REMOVED user [%i]:%s. new population: %i' % (u_id, user.name, len(self._users), ))
 
     def debug_deploy_configuration(self, configuration):
         # LOGGER.info('con')
         pass
+
+    def debug_broadcast(self, debug_message_raw):
+        for u_id in self._users:
+            self._users[u_id].ws.write_message(debug_message_raw, True)

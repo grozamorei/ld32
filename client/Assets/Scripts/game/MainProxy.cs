@@ -19,6 +19,13 @@ namespace game
         [EditorReadOnly]
         public GameState state;
         
+        [EditorReadOnly]
+        public string myName;
+        [EditorReadOnly]
+        public byte myId;
+        [EditorReadOnly]
+        public string myWorld;
+        
         public GameObject cellPrefab;
         
         private Connection _connection;
@@ -50,6 +57,13 @@ namespace game
         {
             Debug.Log("MainProxy: try authorize with: " + name + "; " + world); 
             _connection.tryAuthorize(name, world);
+        }
+        
+        public void rememberMe(string name, byte id, string world)
+        {
+            myName = name;
+            myId = id;
+            myWorld = world;
         }
         
         public void initializeWorld(WorldData data)
