@@ -1,0 +1,90 @@
+[
+    {
+        "cls" : "auth_status",
+        "type" : "enum",
+        "fields" : [
+                    "none",
+                    "auth_success",
+                    "name_occupied",
+                    "unknown"
+                    ],
+        "serialize_as" : "byte"
+    },
+
+    {
+        "cls" : "enter_world_status",
+        "type" : "enum",
+        "fields" : [
+                    "none",
+                    "enter_success",
+                    "too_many_users",
+                    "unknown"
+                    ],
+        "serialize_as" : "byte"
+    },
+
+    [
+        "debug_package",
+        "common",
+        [ "sender", "string" ],
+        [ "message", "string" ]
+    ],
+
+
+    [
+        "request_enter_world",
+        "client",
+        [ "user_name", "string" ],
+        [ "world_name", "string" ]
+    ],
+
+    [
+        "request_create_world",
+        "client",
+        [ "user_name", "string" ],
+        [ "world_name", "string" ],
+        [ "world_step", "short" ],
+        [ "world_size_x", "short" ],
+        [ "world_size_y", "short" ],
+        [ "world_population", "short" ]
+    ],
+
+
+
+    [
+        "welcome",
+        "server",
+        [ "available_name", "string" ],
+        [ "random_world", "string" ]
+    ],
+
+    [
+        "response_authorize",
+        "server",
+        [ "status", "auth_status" ],
+        [ "token", "string" ]
+    ],
+
+    [
+        "response_enter_world",
+        "server",
+        [ "status", "enter_world_status" ]
+    ],
+
+    [
+        "world_data",
+        "server",
+        [ "world_step", "short" ],
+        [ "size_x", "short" ],
+        [ "size_y", "short" ],
+        [ "max_population", "short" ],
+        [ "players_ids", "byte[]" ],
+        [ "players_names", "string[]" ]
+    ],
+
+    [
+        "room_snapshot",
+        "server",
+        [ "snapshot", "byte[]" ]
+    ]
+]

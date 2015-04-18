@@ -1,0 +1,21 @@
+{
+    "protocol_descriptor" : "protocol.json",
+    "target_files" : {
+        "cs" : {
+            "path" : "../client/Assets/Scripts/ProtoTest.cs",
+            "imports" : [
+                "System",
+                "System.IO"
+            ],
+            "namespace" : "proto"
+        },
+        "py" : {
+            "path" : "../server/proto/protocol.py",
+            "imports" : [
+                "struct",
+                "logging"
+            ],
+            "namespace" : ""
+        }
+    }
+}
