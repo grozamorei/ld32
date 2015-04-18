@@ -1,0 +1,9 @@
+Build/
+Library/
+Temp/
+.idea
+*.csproj
+*.sln
+*.suo
+*.userprefs
+*.pyc
