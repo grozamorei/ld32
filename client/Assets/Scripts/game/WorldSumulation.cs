@@ -22,7 +22,8 @@ namespace game
         
         void Update()
         {
-            
+            if (!_game.enabled)
+                return;
         }
     }
 }
