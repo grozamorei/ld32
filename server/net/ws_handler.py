@@ -77,9 +77,11 @@ class WSHandler(WebSocketHandler):
                         self.write_message(u.world.metadata, True)
                         self._status = _AuthStatus.AUTHORIZED
                     else:
+                        LOGGER.info('User %s was refused to enter the world %s' % (name, u.world._name))
                         res.status = EnterWorldStatus.NONE
                         self.write_message(res.encode_self(), True)
                 else:
+                    LOGGER.info('User was refused to enter the cluster with name %s' % name)
                     res.status = EnterWorldStatus.NONE
                     self.write_message(res.encode_self(), True)
         elif self._status == _AuthStatus.AUTHORIZED:
