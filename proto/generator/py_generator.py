@@ -78,16 +78,10 @@ class PYGenerator(BaseGenerator):
             f.write('%sself.%s = %s\n' % (TAB2, field_name, default_value, ))
 
         def add_field_format(field_name, field_type, *_):
-            if field_type == 'byte':
-                f.write(' b')
-            elif field_type == 'short':
-                f.write(' h')
-            elif field_type == 'int':
-                f.write(' i')
-            elif field_type == 'string':
-                f.write(' b %is' % _[1])
-            elif field_type in self._custom_enums:
-                f.write(' b')
+            fmt = util.field_format(field_type,
+                                    _[1] if field_type == 'string' else None,
+                                    self._custom_enums)
+            f.write(fmt)
 
         cls_name = util.format_to_pascal(descriptor[0])
         f.write('\n')
@@ -146,19 +140,46 @@ class PYGenerator(BaseGenerator):
 
         f = self._file
 
+        def field_len(field_type):
+            if field_type == 'byte' or field_type in self._custom_enums:
+                return 1
+            if field_type == 'short':
+                return 2
+            if field_type == 'int':
+                return 4
+            return 0
+
         f.write('\n')
         f.write('%sdef encode_self(self):\n' % TAB)
         f.write('%s# noinspection PyListCreation\n' % TAB2)
-        f.write('%svalues = [self._struct.size - 5, self.%s]\n' % (TAB2, self._get_id_method_name, ))
+        f.write('%svalues = [0, self.%s]\n' % (TAB2, self._get_id_method_name, ))
+        f.write('%sp_len = 0\n' % TAB2)
+        f.write('%sfmt = "<i b"\n' % TAB2)
 
         l = len(descriptor)
+        last_str = False
         for field_i in xrange(2, l):
             field_name = descriptor[field_i][0]
             field_type = descriptor[field_i][1]
             if field_type == 'string':
-                field_fixed_size = descriptor[field_i][2]
-                f.write('%svalues.append(%i)\n' % (TAB2, field_fixed_size, ))
+                # field_fixed_size = descriptor[field_i][2]
+                f.write('\n')
+                f.write('%snew_str = self.%s.encode("utf-8") if isinstance(self.%s, unicode) else self.%s\n' % (TAB2, field_name, field_name, field_name))
+                f.write('%sp_len += len(new_str) + 1\n' % TAB2)
+                f.write('%svalues.append(len(new_str))\n' % TAB2)
+                f.write('%sfmt += " b"\n' % TAB2)
+                f.write('%svalues.append(new_str)\n' % TAB2)
+                f.write('%sfmt += " " + str(len(new_str)) + "s"\n' % TAB2)
+                last_str = True
+            else:
+                if last_str:
+                    f.write('\n')
+                    last_str = False
+                f.write('%svalues.append(self.%s)\n' % (TAB2, field_name))
+                f.write('%sp_len += %i\n' % (TAB2, field_len(field_type)))
+                f.write('%sfmt += "%s"\n' % (TAB2, util.field_format(field_type, None, self._custom_enums)))
 
-            f.write('%svalues.append(self.%s)\n' % (TAB2, field_name))
 
-        f.write('%sreturn self._struct.pack(*values)\n' % TAB2)
+        f.write('\n')
+        f.write('%svalues[0] = p_len\n' % TAB2)
+        f.write('%sreturn struct.pack(fmt, *values)\n' % TAB2)

@@ -59,7 +59,8 @@ class WSHandler(WebSocketHandler):
             return
 
         if self._status == _AuthStatus.WELCOME_SEND:
-            if message[4] == RequestEnterWorld.ID:
+            message_id = struct.unpack_from('b', message[4])[0]
+            if message_id == RequestEnterWorld.ID:
                 res = ResponseEnterWorld()
                 req_enter = RequestEnterWorld()
                 req_enter.unpack_from(message)
@@ -68,16 +69,17 @@ class WSHandler(WebSocketHandler):
                 world = req_enter.world_name
                 if self._cluster.can_enter(name, world):
                     u = User(self, name)
-                    if self._cluster.add_user(u, world):
+                    if self._cluster.enter(u, world):
                         res.status = EnterWorldStatus.ENTER_SUCCESS
+                        res.my_id = u.byte_id
                         self.write_message(res.encode_self(), True)
                         self.write_message(u.world.metadata, True)
                         self._status = _AuthStatus.AUTHORIZED
                     else:
-                        res.status = EnterWorldStatus.UNKNOWN
+                        res.status = EnterWorldStatus.NONE
                         self.write_message(res.encode_self(), True)
                 else:
-                    res.status = EnterWorldStatus.TOO_MANY_USERS
+                    res.status = EnterWorldStatus.NONE
                     self.write_message(res.encode_self(), True)
         elif self._status == _AuthStatus.AUTHORIZED:
             LOGGER.info('message from logged in user: ')

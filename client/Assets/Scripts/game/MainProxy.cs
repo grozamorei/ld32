@@ -33,7 +33,25 @@ namespace game
         
         public void showWelcomeData(Welcome data)
         {
+            Debug.Log("MainProxy: showWelcome data: " + data.availableName + "; " + data.randomWorld); 
             _loginMenu.showWelcomeData(data.availableName, data.randomWorld);
+        }
+        
+        public void showWelcomeData()
+        {
+            Debug.Log("MainProxy: showWelcome data "); 
+            _loginMenu.showWelcomeData();
+        }
+        
+        public void tryAuthorize(string name, string world)
+        {
+            Debug.Log("MainProxy: try authorize with: " + name + "; " + world); 
+            _connection.tryAuthorize(name, world);
+        }
+        
+        public void initializeWorld(WorldData data)
+        {
+            _simulation.initialize(data);
         }
     }
 }

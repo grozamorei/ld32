@@ -8,20 +8,10 @@ using System.IO;
 namespace proto
 {
 
-    public enum AuthStatus
-    {
-        NONE,
-        AUTH_SUCCESS,
-        NAME_OCCUPIED,
-        UNKNOWN,
-    }
-
     public enum EnterWorldStatus
     {
         NONE,
         ENTER_SUCCESS,
-        TOO_MANY_USERS,
-        UNKNOWN,
     }
 
     public abstract class BaseMessage
@@ -165,38 +155,25 @@ namespace proto
         }
     }
 
-    public class ResponseAuthorize : BaseMessage
+    public class ResponseEnterWorld : BaseMessage
     {
         public static byte ID { get { return 4; } }
         public override byte getID() { return 4; }
-        public readonly AuthStatus status;
-        public readonly string token;
-    
-        public ResponseAuthorize(byte[] source)
-        {
-            initReceiveStream(source);
-            status = (AuthStatus)reader.ReadByte();
-            token = reader.ReadString();
-        }
-    }
-
-    public class ResponseEnterWorld : BaseMessage
-    {
-        public static byte ID { get { return 5; } }
-        public override byte getID() { return 5; }
         public readonly EnterWorldStatus status;
+        public readonly byte myId;
     
         public ResponseEnterWorld(byte[] source)
         {
             initReceiveStream(source);
             status = (EnterWorldStatus)reader.ReadByte();
+            myId = reader.ReadByte();
         }
     }
 
     public class WorldData : BaseMessage
     {
-        public static byte ID { get { return 6; } }
-        public override byte getID() { return 6; }
+        public static byte ID { get { return 5; } }
+        public override byte getID() { return 5; }
         public readonly string name;
         public readonly short worldStep;
         public readonly short sizeX;
@@ -216,8 +193,8 @@ namespace proto
 
     public class RoomSnapshot : BaseMessage
     {
-        public static byte ID { get { return 7; } }
-        public override byte getID() { return 7; }
+        public static byte ID { get { return 6; } }
+        public override byte getID() { return 6; }
         public readonly byte[] snapshot;
     
         public RoomSnapshot(byte[] source)

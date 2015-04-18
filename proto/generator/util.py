@@ -3,6 +3,7 @@ import string
 TAB = '    '
 TAB2 = '        '
 TAB3 = '            '
+TAB4 = '                '
 
 __NUMERIC = ['int', 'short', 'byte']
 __NULLABLE = ['string[]', 'byte[]', 'short[]']
@@ -61,3 +62,16 @@ def default_for_type(type_name, custom_enums):
         return custom_enums[type_name]['fields'][0]
 
     assert False
+
+
+def field_format(field_type, len, custom_enums):
+    if field_type == 'byte' or field_type in custom_enums:
+        return ' b'
+    elif field_type == 'short':
+        return ' h'
+    elif field_type == 'int':
+        return ' i'
+    elif field_type == 'string':
+        return ' b %is' % len
+    return ''
+

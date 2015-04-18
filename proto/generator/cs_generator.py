@@ -183,7 +183,7 @@ class CSGenerator(BaseGenerator):
         f = self._file
 
         def reader_method(field_type):
-            if field_type in self._custom_enums:
+            if field_type == 'byte' or field_type in self._custom_enums:
                 return 'ReadByte'
             if field_type == 'short':
                 return 'ReadInt16'

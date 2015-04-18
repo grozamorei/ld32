@@ -1,3 +1,4 @@
+# coding=utf-8
 from datetime import datetime
 import logging
 from game.world import World
@@ -21,7 +22,7 @@ class WorldCluster():
             if w.can_accept:
                 return world_name
 
-        new_name = 'world' + str(self._next_world)
+        new_name = u'мир#'.encode('utf-8') + str(self._next_world)
         self._next_world += 1
         new_world = World(new_name, 32, 32, 500, 10)
         self._worlds.setdefault(new_name, new_world)
@@ -29,12 +30,13 @@ class WorldCluster():
 
     def get_free_name(self):
         self._next_user += 1
-        return 'user' + str(self._next_user)
+        return u'вася'.encode('utf-8') + str(self._next_user)
 
     def can_enter(self, user_name, world_name):
         return True
 
     def enter(self, user, world_name):
+        self._worlds[world_name].add_user(user)
         return True
 
     def update(self):

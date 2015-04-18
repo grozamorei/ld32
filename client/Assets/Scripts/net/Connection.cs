@@ -14,7 +14,8 @@ namespace net
         CONNECTED,
         WELCOMED,
         AUTHORIZING,
-        AUTHORIZED
+        AUTHORIZED,
+        IN_WORLD,
     }
 
     [RequireComponent(typeof(MainProxy))]
@@ -37,17 +38,16 @@ namespace net
             _state = ConnectionState.UNKNOWN;
             _socket = new WebSocket (new Uri ("ws://188.242.130.83:3000/echo"));
             yield return StartCoroutine (_socket.Connect ());
-            _state = ConnectionState.CONNECTED;
         }
         
         void Update()
         {
-            if (_state == ConnectionState.UNKNOWN)
-                return;
-
             byte[] data = _socket.Recv ();
             
             if (data == null || data.Length == 0) return;
+            
+            if (_state == ConnectionState.UNKNOWN)
+                _state = ConnectionState.CONNECTED;
             
             if (data.Length < 4)
             {
@@ -91,7 +91,41 @@ namespace net
             }
             else if (_state == ConnectionState.AUTHORIZING)
             {
-                Debug.LogWarning("message on authorizing : " + data[4].ToString());
+                if (data[4] == ResponseEnterWorld.ID)
+                {
+                    var res = new ResponseEnterWorld(data);
+                    if (res.status == EnterWorldStatus.ENTER_SUCCESS)
+                    {
+                        Debug.Log("authorize success!!");
+                        _state = ConnectionState.AUTHORIZED;
+                    } 
+                    else
+                    {
+                        Debug.Log("authorize failed!");
+                        _game.showWelcomeData();
+                        _state = ConnectionState.WELCOMED;
+                    }
+                }
+                else
+                {
+                    Debug.LogError("expected auth response, got :" + data[4].ToString() + " instead");
+                    return;
+                }
+            }
+            else if (_state == ConnectionState.AUTHORIZED)
+            {
+                if (data[4] == WorldData.ID)
+                {
+                    Debug.Log("world data received!");
+                    var wData = new WorldData(data);
+                    _game.initializeWorld(wData);
+                    _state = ConnectionState.IN_WORLD;
+                }
+                else
+                {
+                    Debug.LogError("expected world data, got :" + data[4].ToString() + " instead");
+                    return;
+                }
             }
         }
         

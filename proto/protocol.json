@@ -1,24 +1,11 @@
 [
-    {
-        "cls" : "auth_status",
-        "type" : "enum",
-        "fields" : [
-                    "none",
-                    "auth_success",
-                    "name_occupied",
-                    "unknown"
-                    ],
-        "serialize_as" : "byte"
-    },
 
     {
         "cls" : "enter_world_status",
         "type" : "enum",
         "fields" : [
                     "none",
-                    "enter_success",
-                    "too_many_users",
-                    "unknown"
+                    "enter_success"
                     ],
         "serialize_as" : "byte"
     },
@@ -59,16 +46,10 @@
     ],
 
     [
-        "response_authorize",
-        "server",
-        [ "status", "auth_status" ],
-        [ "token", "string", 10 ]
-    ],
-
-    [
         "response_enter_world",
         "server",
-        [ "status", "enter_world_status" ]
+        [ "status", "enter_world_status" ],
+        [ "my_id", "byte" ]
     ],
 
     [

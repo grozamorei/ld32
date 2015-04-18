@@ -7,13 +7,8 @@ import logging
 
 
 # noinspection PyClassHasNoInit
-class AuthStatus():
-    NONE, AUTH_SUCCESS, NAME_OCCUPIED, UNKNOWN = range(4)
-
-
-# noinspection PyClassHasNoInit
 class EnterWorldStatus():
-    NONE, ENTER_SUCCESS, TOO_MANY_USERS, UNKNOWN = range(4)
+    NONE, ENTER_SUCCESS = range(2)
 
 
 class BaseMessage():
@@ -46,12 +41,26 @@ class DebugPackage(BaseMessage):
 
     def encode_self(self):
         # noinspection PyListCreation
-        values = [self._struct.size - 5, self.id]
-        values.append(50)
-        values.append(self.sender)
-        values.append(120)
-        values.append(self.message)
-        return self._struct.pack(*values)
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
+
+        new_str = self.sender.encode("utf-8") if isinstance(self.sender, unicode) else self.sender
+        p_len += len(new_str) + 1
+        values.append(len(new_str))
+        fmt += " b"
+        values.append(new_str)
+        fmt += " " + str(len(new_str)) + "s"
+
+        new_str = self.message.encode("utf-8") if isinstance(self.message, unicode) else self.message
+        p_len += len(new_str) + 1
+        values.append(len(new_str))
+        fmt += " b"
+        values.append(new_str)
+        fmt += " " + str(len(new_str)) + "s"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
 
     def unpack_from(self, raw):
         values = self._struct.unpack(raw)
@@ -135,15 +144,29 @@ class Welcome(BaseMessage):
 
     def encode_self(self):
         # noinspection PyListCreation
-        values = [self._struct.size - 5, self.id]
-        values.append(50)
-        values.append(self.available_name)
-        values.append(50)
-        values.append(self.random_world)
-        return self._struct.pack(*values)
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
+
+        new_str = self.available_name.encode("utf-8") if isinstance(self.available_name, unicode) else self.available_name
+        p_len += len(new_str) + 1
+        values.append(len(new_str))
+        fmt += " b"
+        values.append(new_str)
+        fmt += " " + str(len(new_str)) + "s"
+
+        new_str = self.random_world.encode("utf-8") if isinstance(self.random_world, unicode) else self.random_world
+        p_len += len(new_str) + 1
+        values.append(len(new_str))
+        fmt += " b"
+        values.append(new_str)
+        fmt += " " + str(len(new_str)) + "s"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
 
 
-class ResponseAuthorize(BaseMessage):
+class ResponseEnterWorld(BaseMessage):
     ID = 4
 
     @property
@@ -152,48 +175,34 @@ class ResponseAuthorize(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        self.status = AuthStatus.NONE
-        self.token = ""
+        self.status = EnterWorldStatus.NONE
+        self.my_id = -1
 
-        self._format += " b b 10s"
+        self._format += " b b"
         self._struct = struct.Struct(self._format)
 
     def encode_self(self):
         # noinspection PyListCreation
-        values = [self._struct.size - 5, self.id]
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
         values.append(self.status)
-        values.append(10)
-        values.append(self.token)
-        return self._struct.pack(*values)
+        p_len += 1
+        fmt += " b"
+        values.append(self.my_id)
+        p_len += 1
+        fmt += " b"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
 
 
-class ResponseEnterWorld(BaseMessage):
+class WorldData(BaseMessage):
     ID = 5
 
     @property
     def id(self):
         return 5
-
-    def __init__(self):
-        BaseMessage.__init__(self)
-        self.status = EnterWorldStatus.NONE
-
-        self._format += " b"
-        self._struct = struct.Struct(self._format)
-
-    def encode_self(self):
-        # noinspection PyListCreation
-        values = [self._struct.size - 5, self.id]
-        values.append(self.status)
-        return self._struct.pack(*values)
-
-
-class WorldData(BaseMessage):
-    ID = 6
-
-    @property
-    def id(self):
-        return 6
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -208,22 +217,40 @@ class WorldData(BaseMessage):
 
     def encode_self(self):
         # noinspection PyListCreation
-        values = [self._struct.size - 5, self.id]
-        values.append(50)
-        values.append(self.name)
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
+
+        new_str = self.name.encode("utf-8") if isinstance(self.name, unicode) else self.name
+        p_len += len(new_str) + 1
+        values.append(len(new_str))
+        fmt += " b"
+        values.append(new_str)
+        fmt += " " + str(len(new_str)) + "s"
+
         values.append(self.world_step)
+        p_len += 2
+        fmt += " h"
         values.append(self.size_x)
+        p_len += 2
+        fmt += " h"
         values.append(self.size_y)
+        p_len += 2
+        fmt += " h"
         values.append(self.max_population)
-        return self._struct.pack(*values)
+        p_len += 2
+        fmt += " h"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
 
 
 class RoomSnapshot(BaseMessage):
-    ID = 7
+    ID = 6
 
     @property
     def id(self):
-        return 7
+        return 6
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -234,6 +261,12 @@ class RoomSnapshot(BaseMessage):
 
     def encode_self(self):
         # noinspection PyListCreation
-        values = [self._struct.size - 5, self.id]
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
         values.append(self.snapshot)
-        return self._struct.pack(*values)
+        p_len += 0
+        fmt += ""
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
