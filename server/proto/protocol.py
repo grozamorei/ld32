@@ -16,3 +16,108 @@ class EnterWorldStatus():
     NONE, ENTER_SUCCESS, TOO_MANY_USERS, UNKNOWN = range(4)
 
 
+class BaseMessage():
+    @property
+    def get_id(self):
+        raise NotImplementedError()
+
+    def __init__(self):
+        _length = -1
+        _real_id = 255
+
+        _encode_format = "i b"
+        _decode_format = "i b"
+
+
+class DebugPackage(BaseMessage):
+    @property
+    def get_id(self):
+        return 0
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        sender = ""
+        message = ""
+
+
+class RequestEnterWorld(BaseMessage):
+    @property
+    def get_id(self):
+        return 1
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        user_name = ""
+        world_name = ""
+
+
+class RequestCreateWorld(BaseMessage):
+    @property
+    def get_id(self):
+        return 2
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        user_name = ""
+        world_name = ""
+        world_step = -1
+        world_size_x = -1
+        world_size_y = -1
+        world_population = -1
+
+
+class Welcome(BaseMessage):
+    @property
+    def get_id(self):
+        return 3
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        available_name = ""
+        random_world = ""
+
+
+class ResponseAuthorize(BaseMessage):
+    @property
+    def get_id(self):
+        return 4
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        status = AuthStatus.NONE
+        token = ""
+
+
+class ResponseEnterWorld(BaseMessage):
+    @property
+    def get_id(self):
+        return 5
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        status = EnterWorldStatus.NONE
+
+
+class WorldData(BaseMessage):
+    @property
+    def get_id(self):
+        return 6
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        world_step = -1
+        size_x = -1
+        size_y = -1
+        max_population = -1
+        players_ids = None
+        players_names = None
+
+
+class RoomSnapshot(BaseMessage):
+    @property
+    def get_id(self):
+        return 7
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        snapshot = None

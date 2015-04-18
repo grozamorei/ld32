@@ -109,6 +109,7 @@ class CSGenerator(BaseGenerator):
         f = self._file
 
         def write_field_definition(field_name, field_type, *_):
+            field_name = util.format_to_camel(field_name)
             field_type = util.format_to_pascal(field_type) if field_type in self._custom_enums else field_type
             f.write('%spublic readonly %s %s;\n' % (TAB2, field_type, field_name, ))
 
@@ -136,8 +137,13 @@ class CSGenerator(BaseGenerator):
             return
 
         def write_constructor_args(field_name, field_type, last, *_):
+            field_name = util.format_to_camel(field_name)
             spacing = ' ' if last else ', '
             f.write('%s %s%s' % (field_type, field_name, spacing))
+
+        def write_fields_init(field_name, *_):
+            field_name = util.format_to_camel(field_name)
+            f.write('%sthis.%s = %s;\n' % (TAB3, field_name, field_name))
 
         f.write('%spublic %s( ' % (TAB2, util.format_to_pascal(descriptor[0])))
         util.iterate_message_fields(descriptor, write_constructor_args)
@@ -145,7 +151,7 @@ class CSGenerator(BaseGenerator):
 
         f.write('%s{\n' % TAB2)
         f.write('%s%s();\n' % (TAB3, self._send_stream_creator_name, ))
-        util.iterate_message_fields(descriptor, lambda n, t, *_: f.write('%sthis.%s = %s;\n' % (TAB3, n, n)))
+        util.iterate_message_fields(descriptor, write_fields_init)
         f.write('%s}\n' % TAB2)
 
     def _message_send_encode(self, descriptor, m_type):
@@ -155,6 +161,7 @@ class CSGenerator(BaseGenerator):
         f = self._file
 
         def write_field(field_name, field_type, *_):
+            field_name = util.format_to_camel(field_name)
             if field_type == 'string' and _[1]:
                 f.write('%swriter.Write(wrapString(%s, %i));\n' % (TAB3, field_name, _[1]))
             else:
@@ -186,6 +193,7 @@ class CSGenerator(BaseGenerator):
             assert False
 
         def read_from_byte_array(field_name, field_type, *_):
+            field_name = util.format_to_camel(field_name)
             method = reader_method(field_type)
             if field_type in self._custom_enums:
                 f.write('%s%s = (%s)reader.%s();\n' % (TAB3, field_name, util.format_to_pascal(field_type), method, ))
