@@ -17,7 +17,6 @@ class World():
         self._users = {}
 
         self._raw_metadata = metadata.encode_self()
-        LOGGER.info(self._raw_metadata)
 
     @property
     def can_accept(self):

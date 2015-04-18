@@ -18,7 +18,7 @@ class WSHandler(WebSocketHandler):
         self._cluster = application.settings['cluster']
         self._status = _AuthStatus.UNKNOWN
         self._partial_message = None
-        LOGGER.info('Socket created')
+        LOGGER.debug('Socket created')
 
     def data_received(self, chunk):
         LOGGER.info('Data chunk received: %r' % chunk)
@@ -70,6 +70,7 @@ class WSHandler(WebSocketHandler):
                 if self._cluster.can_enter(name, world):
                     u = User(self, name)
                     if self._cluster.enter(u, world):
+                        LOGGER.info('User %s entering world %s' % (u.name, u.world._name))
                         res.status = EnterWorldStatus.ENTER_SUCCESS
                         res.my_id = u.byte_id
                         self.write_message(res.encode_self(), True)
