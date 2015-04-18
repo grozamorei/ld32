@@ -6,8 +6,7 @@ namespace game.board
 {
     public enum BoardState
     {
-        SLEEPING,
-        INITIALIZING,
+        NONE,
         INITIALIZED,
     }
 
@@ -20,7 +19,7 @@ namespace game.board
         private CellRotator[] _fieldVisual;
         
         [EditorReadOnly]
-        public BoardState _state = BoardState.SLEEPING;
+        public BoardState _state = BoardState.NONE;
         
         [EditorReadOnly]
         public int maxX;
@@ -44,6 +43,8 @@ namespace game.board
                     _fieldVisual[i * maxX + j] = z.GetComponent<CellRotator> ();
                 }
             }
+            
+            _state = BoardState.INITIALIZED;
         }
         
 //        float currentTime = 0;
