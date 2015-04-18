@@ -8,11 +8,11 @@ import logging
 
 # noinspection PyClassHasNoInit
 class AuthStatus():
-    NONE, AUTH_SUCCESS, NAME_OCCUPIED, UNKNOWN = xrange(4)
+    NONE, AUTH_SUCCESS, NAME_OCCUPIED, UNKNOWN = range(4)
 
 
 # noinspection PyClassHasNoInit
 class EnterWorldStatus():
-    NONE, ENTER_SUCCESS, TOO_MANY_USERS, UNKNOWN = xrange(4)
+    NONE, ENTER_SUCCESS, TOO_MANY_USERS, UNKNOWN = range(4)
 
 
