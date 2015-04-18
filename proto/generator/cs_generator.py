@@ -165,7 +165,7 @@ class CSGenerator(BaseGenerator):
             field_name = util.format_to_camel(field_name)
             if field_type == 'string' and _[1]:
                 f.write('%swriter.Write(wrapString(%s, %i));\n' % (TAB3, field_name, _[1]))
-            if field_type == 'int[]':
+            elif field_type == 'int[]':
                 f.write('%swriter.Write((int)%s.Length);\n' % (TAB3, field_name))
                 f.write('%sfor (int i = 0; i < %s.Length; i++)\n' % (TAB3, field_name))
                 f.write('%swriter.Write(%s[i]);\n' % (TAB4, field_name))

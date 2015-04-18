@@ -81,9 +81,7 @@ namespace proto
         public byte[] encode()
         {
             writer.Write(wrapString(sender, 50));
-            writer.Write(sender);
             writer.Write(wrapString(message, 120));
-            writer.Write(message);
             return wrapCommand();
         }
     }
@@ -104,9 +102,7 @@ namespace proto
         public byte[] encode()
         {
             writer.Write(wrapString(userName, 50));
-            writer.Write(userName);
             writer.Write(wrapString(worldName, 50));
-            writer.Write(worldName);
             return wrapCommand();
         }
     }

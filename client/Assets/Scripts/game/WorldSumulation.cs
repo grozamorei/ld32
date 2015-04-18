@@ -1,5 +1,6 @@
 using proto;
 using UnityEngine;
+using game.board;
 
 namespace game
 {
@@ -7,11 +8,15 @@ namespace game
     public class WorldSimulation : MonoBehaviour
     {
         private MainProxy _game;
-        public WorldData _data;
+        private BoardContainer _boardAss;
         
-        public void initialize(WorldData data)
+        private WorldData _data;
+        
+        public void initialize(GameObject cellPrefab, WorldData data)
         {
             _game = gameObject.GetComponent<MainProxy>();
+            _boardAss = gameObject.AddComponent<BoardContainer>();
+            _boardAss.createBoard(cellPrefab, data.sizeX, data.sizeY);
             _data = data;
         }
         
@@ -22,8 +27,6 @@ namespace game
         
         void Update()
         {
-            if (!_game.enabled)
-                return;
         }
     }
 }

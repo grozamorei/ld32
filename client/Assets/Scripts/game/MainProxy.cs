@@ -1,6 +1,7 @@
 using UnityEngine;
 using proto;
 using net;
+using game.board;
 
 namespace game
 {
@@ -17,6 +18,8 @@ namespace game
     {
         [EditorReadOnly]
         public GameState state;
+        
+        public GameObject cellPrefab;
         
         private Connection _connection;
         private LoginScreenLogic _loginMenu;
@@ -51,7 +54,7 @@ namespace game
         
         public void initializeWorld(WorldData data)
         {
-            _simulation.initialize(data);
+            _simulation.initialize(cellPrefab, data);
         }
     }
 }
