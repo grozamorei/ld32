@@ -50,10 +50,10 @@ namespace proto
             realID = reader.ReadByte();
         }
 
-        protected string wrapString(string value)
+        protected string wrapString(string value, int wrapAround)
         {
             byte[] byteValue = System.Text.Encoding.UTF8.GetBytes(value);
-            int emptyLength = 50 - byteValue.Length;
+            int emptyLength = wrapAround - byteValue.Length;
             string filler = "";
             for (int i = 0; i < emptyLength; i++) filler += " ";
             return value + filler;
@@ -89,8 +89,8 @@ namespace proto
         }
         public byte[] encode()
         {
-            writer.Write(wrapString(sender));
-            writer.Write(wrapString(message));
+            writer.Write(wrapString(sender, 50));
+            writer.Write(wrapString(message, 120));
             return wrapCommand();
         }
     }
@@ -109,8 +109,8 @@ namespace proto
         }
         public byte[] encode()
         {
-            writer.Write(wrapString(userName));
-            writer.Write(wrapString(worldName));
+            writer.Write(wrapString(userName, 50));
+            writer.Write(wrapString(worldName, 50));
             return wrapCommand();
         }
     }
@@ -137,8 +137,8 @@ namespace proto
         }
         public byte[] encode()
         {
-            writer.Write(wrapString(userName));
-            writer.Write(wrapString(worldName));
+            writer.Write(wrapString(userName, 50));
+            writer.Write(wrapString(worldName, 50));
             writer.Write(worldStep);
             writer.Write(worldSizeX);
             writer.Write(worldSizeY);

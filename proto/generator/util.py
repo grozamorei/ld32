@@ -38,9 +38,14 @@ def iterate_message_fields(message_descriptor, iterator):
     """
     l = len(message_descriptor)
     for f in xrange(2, l):
+        is_last = f == l - 1
         field_name = format_to_camel(message_descriptor[f][0])
         field_type = message_descriptor[f][1]
-        iterator(field_name, field_type, f == l - 1)
+        if 'string' in field_type:
+            field_fixed_size = message_descriptor[f][2]
+            iterator(field_name, field_type, is_last, field_fixed_size)
+        else:
+            iterator(field_name, field_type, is_last)
 
 
 def default_for_type(type_name, custom_enums):

@@ -26,24 +26,24 @@
     [
         "debug_package",
         "common",
-        [ "sender", "string" ],
-        [ "message", "string" ]
+        [ "sender", "string", 50 ],
+        [ "message", "string", 120 ]
     ],
 
 
     [
         "request_enter_world",
         "client",
-        [ "user_name", "string" ],
-        [ "world_name", "string" ]
+        [ "user_name", "string", 50 ],
+        [ "world_name", "string", 50 ]
     ],
 
     [
         "request_create_world",
         "client",
-        [ "user_name", "string" ],
-        [ "world_name", "string" ],
-        [ "world_step", "short" ],
+        [ "user_name", "string", 50 ],
+        [ "world_name", "string", 50 ],
+        [ "world_step", "short", 50 ],
         [ "world_size_x", "short" ],
         [ "world_size_y", "short" ],
         [ "world_population", "short" ]
@@ -54,15 +54,15 @@
     [
         "welcome",
         "server",
-        [ "available_name", "string" ],
-        [ "random_world", "string" ]
+        [ "available_name", "string", 50 ],
+        [ "random_world", "string", 50 ]
     ],
 
     [
         "response_authorize",
         "server",
         [ "status", "auth_status" ],
-        [ "token", "string" ]
+        [ "token", "string", 10 ]
     ],
 
     [
@@ -79,7 +79,7 @@
         [ "size_y", "short" ],
         [ "max_population", "short" ],
         [ "players_ids", "byte[]" ],
-        [ "players_names", "string[]" ]
+        [ "players_names", "string[]", 50 ]
     ],
 
     [

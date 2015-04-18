@@ -40,7 +40,7 @@ class PYGenerator(BaseGenerator):
         l = len(fields)
         for i in xrange(l):
             if i == l-1:
-                f.write('%s = xrange(%i)\n' % (fields[i].upper(), l))
+                f.write('%s = range(%i)\n' % (fields[i].upper(), l))
             else:
                 f.write('%s, ' % fields[i].upper())
         f.write('\n')
