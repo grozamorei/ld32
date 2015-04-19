@@ -1,5 +1,5 @@
 # coding=utf-8
-from datetime import datetime
+import time
 import logging
 from game.world import World
 
@@ -14,7 +14,7 @@ class WorldCluster():
         self._worlds = {}
         self._next_world = 0
 
-        self._current_time = datetime.now().microsecond
+        self._current_time = int(time.time() * 1000)
 
     def get_world(self):
         for world_name in self._worlds:
@@ -40,8 +40,9 @@ class WorldCluster():
         return True
 
     def update(self):
-        new_time = datetime.now().microsecond
+        new_time = int(time.time() * 1000)
         dt = new_time - self._current_time
         self._current_time = new_time
 
-        # print 'world update: dt: %r' % dt
+        for world in self._worlds:
+            self._worlds[world].step(dt)

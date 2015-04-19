@@ -26,6 +26,10 @@ class World():
     def metadata(self):
         return self._raw_metadata
 
+    @property
+    def is_empty(self):
+        return len(self._users) == 0
+
     def add_user(self, user):
         u_id = self._free_ids[0]
         self._free_ids = self._free_ids[1:]
@@ -49,3 +53,9 @@ class World():
     def debug_broadcast(self, debug_message_raw):
         for u_id in self._users:
             self._users[u_id].ws.write_message(debug_message_raw, True)
+
+    def step(self, dt):
+        if self.is_empty:
+            return
+
+        pass
