@@ -24,7 +24,7 @@ class WorldCluster():
 
         new_name = u'мир#'.encode('utf-8') + str(self._next_world)
         self._next_world += 1
-        new_world = World(new_name, 16, 16, 1000, 10)
+        new_world = World(new_name, 64, 64, 1000, 10)
         self._worlds.setdefault(new_name, new_world)
         return new_name
 

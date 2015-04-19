@@ -84,11 +84,11 @@ class World():
             temp.append([])
             for j in range(self._size_y):
                 idx = j * self._size_x + i
-                temp[i].append(self._board[idx])
-                temp[i][j].t_x = i
-                temp[i][j].t_y = j
+                c = self._board[idx]
+                c.t_x = i
+                c.t_y = j
+                temp[i].append(c.clone())
 
-        # backup = self._board[:]
         for cell in self._board:
             hostiles = self._get_hostiles(cell, temp)
             if len(hostiles) == 0:
@@ -99,11 +99,39 @@ class World():
         for cell in self._board:
             if cell.is_dead():
                 cell.reset()
+            if temp[cell.t_x][cell.t_y].is_dead():
+                cell.reset()
 
-        # self._board = backup
 
+        # new_board = self._board[:]
+        for cell in self._board:
+            if cell.user_id == 0:
+                neighbours = self._get_neighbours(cell, temp)
+                # LOGGER.warning('NEIGH: %s : %r' % (cell.idx, neighbours))
+                if len(neighbours) == 3:
+                    self._board[cell.idx].user_id = neighbours[0]
+                else:
+                    # if len(neighbours) > 0:
+                    #     LOGGER.warning('%s: %r' % (cell.idx, neighbours))
+                    # if len(neighbours) > 3:
+                    #     LOGGER.warning(neighbours)
+                    # self._board[cell.idx].
+                    pass
+            else:
+                friends = self._get_friends(cell, temp)
+                # LOGGER.warning('friends: %s : %r' % (cell.idx, friends))
+                l = len(friends)
+                if l == 2 or l == 3:
+                    pass
+                else:
+                    self._board[cell.idx].reset()
+                    cell.reset()
 
-    def _get_hostiles(self, cell, board):
+        # for i in range(self._size_x):
+        #     for j in range(self._size_y):
+        #         self._board[j * self._size_x + i] = new_board[i][j]
+
+    def _get_hostiles(self, cell, board2d):
         hostiles = []
         for i in range(-1, 2):
             for j in range(-1, 2):
@@ -119,8 +147,54 @@ class World():
                 if target_y >= self._size_y:
                     target_y = 0
 
-                n = board[target_x][target_y]
+                n = board2d[target_x][target_y]
                 if n.is_hostile(cell):
                     hostiles.append(n.idx)
 
         return hostiles
+
+    def _get_friends(self, cell, board2d):
+        friends = []
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if i == 0 and j == 0:
+                    continue
+                target_x = cell.t_x + i
+                target_y = cell.t_y + j
+
+                if target_x < 0:
+                    target_x = self._size_x-1
+                if target_x >= self._size_x:
+                    target_x = 0
+                if target_y < 0:
+                    target_y = self._size_y-1
+                if target_y >= self._size_y:
+                    target_y = 0
+
+                n = board2d[target_x][target_y]
+                if n.is_same_user(cell):
+                    friends.append(n.idx)
+
+        return friends
+
+    def _get_neighbours(self, cell, board2d):
+        neighbours = []
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                target_x = cell.t_x + i
+                target_y = cell.t_y + j
+
+                if target_x < 0:
+                    target_x = self._size_x-1
+                if target_x >= self._size_x:
+                    target_x = 0
+                if target_y < 0:
+                    target_y = self._size_y-1
+                if target_y >= self._size_y:
+                    target_y = 0
+
+                n = board2d[target_x][target_y]
+                if n.is_occupied():
+                    neighbours.append(n.user_id)
+
+        return neighbours

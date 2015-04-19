@@ -48,6 +48,13 @@ namespace game.ui
             pento[4] = 0; pento[5] = 1;
             pento[6] = 1; pento[7] = 1;
             pento[8] = 1; pento[9] = 2;
+            
+            glider = new int[10];
+            glider[0] = 2; glider[1] = 0;
+            glider[2] = 0; glider[3] = 1;
+            glider[4] = 2; glider[5] = 1;
+            glider[6] = 1; glider[7] = 2;
+            glider[8] = 2; glider[9] = 2;
         }
         
         public void onPentomino()
