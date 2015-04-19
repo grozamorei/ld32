@@ -5,6 +5,7 @@ using System.IO;
 using proto;
 using util;
 using game;
+using System.Collections.Generic;
 
 namespace net
 {
@@ -139,6 +140,11 @@ namespace net
                     return;
                 }
             }
+            else if (_state == ConnectionState.IN_WORLD)
+            {
+//                if (data[4] == RoomSnapshot)
+                Debug.Log("in world command");
+            }
         }
         
         public void tryAuthorize(string name, string world)
@@ -151,6 +157,12 @@ namespace net
             var auth = new RequestEnterWorld(name, world);
             _socket.Send(auth.encode());
             _state = ConnectionState.AUTHORIZING;
+        }
+        
+        public void debugDeploy(List<int> configuration)
+        {
+            var d = new DebugDeployConfiguration(configuration.ToArray());
+            _socket.Send(d.encode());
         }
         
         private void _storeAddPartial(byte[] chunk)

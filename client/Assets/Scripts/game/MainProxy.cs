@@ -2,6 +2,7 @@ using UnityEngine;
 using proto;
 using net;
 using game.board;
+using System.Collections.Generic;
 
 namespace game
 {
@@ -77,6 +78,11 @@ namespace game
             state = GameState.SIMULATION;
             _simulation.initialize(cellPrefab, data);
             _cheatMenu.initialize(data.sizeX, data.sizeY);
+        }
+        
+        public void deployDebugConfig(List<int> config)
+        {
+            _connection.debugDeploy(config);
         }
     }
 }

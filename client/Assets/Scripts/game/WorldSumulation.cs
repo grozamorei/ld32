@@ -1,6 +1,7 @@
 using proto;
 using UnityEngine;
 using game.board;
+using System.Collections.Generic;
 
 namespace game
 {
@@ -12,6 +13,7 @@ namespace game
         private BoardMouseControl _drag;
         
         private WorldData _data;
+        private GameObject _cellPrefab;
         
         public void initialize(GameObject cellPrefab, WorldData data)
         {
@@ -21,7 +23,8 @@ namespace game
             _data = data;
             
             _drag = new BoardMouseControl();
-            _drag.initialize(Camera.main, _board);
+            _drag.initialize(Camera.main, _board, deployDebugConfig);
+            _cellPrefab = cellPrefab;
         }
         
         void Update()
@@ -33,8 +36,12 @@ namespace game
         
         public void attachToDrag(int[] figure)
         {
-            //Debug.Log(figure.Length);
-            _drag.attach(figure);
+            _drag.attach(_cellPrefab, figure);
+        }
+        
+        private void deployDebugConfig(List<int> config)
+        {
+            _game.deployDebugConfig(config);
         }
     }
 }

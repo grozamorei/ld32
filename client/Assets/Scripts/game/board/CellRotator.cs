@@ -14,6 +14,11 @@ public class CellRotator : MonoBehaviour {
     Color defaultTint = Color.white;
     Color coloredTint = Color.red;
     
+    public void setColor(Color tint)
+    {
+        GetComponent<SpriteRenderer>().color = tint;
+    }
+    
     public void runRotate()
     {
         if (rotating) return;

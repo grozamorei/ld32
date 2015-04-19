@@ -47,7 +47,7 @@ namespace game.ui
             pento[2] = 2; pento[3] = 0;
             pento[4] = 0; pento[5] = 1;
             pento[6] = 1; pento[7] = 1;
-            pento[8] = 2; pento[9] = 1;
+            pento[8] = 1; pento[9] = 2;
         }
         
         public void onPentomino()
