@@ -110,12 +110,13 @@ class DebugDeployConfiguration(BaseMessage):
         self._struct = struct.Struct(self._format)
 
     def unpack_from(self, raw):
-        values = self._struct.unpack(raw)
+        len_arr = raw[5:9]
+        l = struct.unpack("i", len_arr)[0]
+        fmt = "<i b i " + str(l) + "i"
+        values = struct.unpack(fmt, raw)
         self._length = values[0]
         self._real_id = values[1]
-
-        self.configuration = values[2]
-
+        self.configuration = list(values[3:])
 
 class Welcome(BaseMessage):
     ID = 3

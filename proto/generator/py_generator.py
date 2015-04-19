@@ -113,9 +113,24 @@ class PYGenerator(BaseGenerator):
             return
 
         f = self._file
-
         f.write('\n')
         f.write('%sdef unpack_from(self, raw):\n' % TAB)
+
+        l = len(descriptor)
+        flds = []
+        for field_i in xrange(2, l):
+            flds.append(descriptor[field_i][1])
+
+        if 'int[]' in flds:
+            f.write('%slen_arr = raw[5:9]\n' % TAB2)
+            f.write('%sl = struct.unpack("i", len_arr)[0]\n' % TAB2)
+            f.write('%sfmt = "<i b i " + str(l) + "i"\n' % TAB2)
+            f.write('%svalues = struct.unpack(fmt, raw)\n' % TAB2)
+            f.write('%sself._length = values[0]\n' % TAB2)
+            f.write('%sself._real_id = values[1]\n' % TAB2)
+            f.write('%sself.configuration = list(values[3:])' % TAB2)
+            return
+
         f.write('%svalues = self._struct.unpack(raw)\n' % TAB2)
         f.write('%sself._length = values[0]\n' % TAB2)
         f.write('%sself._real_id = values[1]\n' % TAB2)

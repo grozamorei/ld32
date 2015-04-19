@@ -88,7 +88,7 @@ class WSHandler(WebSocketHandler):
                 LOGGER.info('deploy configuration from user: %s' % self._user.name)
                 deploy = DebugDeployConfiguration()
                 deploy.unpack_from(message)
-                self._world.debug_deploy_configuration(deploy.configuration)
+                self._world.debug_deploy_configuration(self._user.byte_id, deploy.configuration)
             elif message_id == DebugPackage.ID:
                 d = DebugPackage()
                 d.unpack_from(message)

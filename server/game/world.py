@@ -42,8 +42,8 @@ class World():
             LOGGER.error('removing already absent user! %s ' % user.name)
         LOGGER.info('REMOVED user [%i]:%s. new population: %i' % (u_id, user.name, len(self._users), ))
 
-    def debug_deploy_configuration(self, configuration):
-        # LOGGER.info('con')
+    def debug_deploy_configuration(self, user_id, configuration):
+        LOGGER.info('user [%i]%s deployed configuration: %r' % (user_id, self._users[user_id].name, configuration))
         pass
 
     def debug_broadcast(self, debug_message_raw):
