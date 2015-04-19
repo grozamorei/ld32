@@ -58,8 +58,8 @@
     ],
 
     [
-        "room_snapshot",
+        "world_snapshot",
         "server",
-        [ "snapshot", "byte[]" ]
+        [ "snapshot", "string", "long" ]
     ]
 ]

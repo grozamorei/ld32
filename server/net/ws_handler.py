@@ -95,7 +95,7 @@ class WSHandler(WebSocketHandler):
                 LOGGER.info('Debug package from %s with %s' % (d.sender, d.message, ))
 
                 if self._status == _AuthStatus.AUTHORIZED:
-                    self._user.world.debug_broadcast(d.encode_self())
+                    self._user.world.broadcast(d.encode_self())
             else:
                 LOGGER.warning('wrong order messages after authorize. got: %i' % message_id)
         else:

@@ -84,5 +84,10 @@ namespace game
         {
             _connection.debugDeploy(config);
         }
+        
+        public void pushSnapshot(byte[] snapshot)
+        {
+            _simulation.pushSnapshot(snapshot);
+        }
     }
 }

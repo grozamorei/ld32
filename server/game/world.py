@@ -1,5 +1,6 @@
 import logging
-from proto.protocol import WorldData
+import zlib
+from proto.protocol import WorldData, WorldSnapshot
 
 LOGGER = logging.getLogger(__name__.split('.')[-1])
 
@@ -13,7 +14,11 @@ class World():
         self._step = metadata.world_step = step
         self._max_population = metadata.max_population = max_population
 
-        self._free_ids = range(0, 255)
+        self._board = []
+        for i in range(size_x * size_y):
+            self._board.append(0)
+
+        self._free_ids = range(1, 120)
         self._users = {}
 
         self._raw_metadata = metadata.encode_self()
@@ -40,7 +45,7 @@ class World():
     def remove_user(self, user):
         u_id = user.byte_id
         self._free_ids.append(u_id)
-        if self._users.has_key(u_id):
+        if u_id in self._users:
             del self._users[user.byte_id]
         else:
             LOGGER.error('removing already absent user! %s ' % user.name)
@@ -48,14 +53,23 @@ class World():
 
     def debug_deploy_configuration(self, user_id, configuration):
         LOGGER.info('user [%i]%s deployed configuration: %r' % (user_id, self._users[user_id].name, configuration))
-        pass
+        for c in configuration:
+            if self._board[c] != 0:
+                continue
+            self._board[c] = user_id
 
-    def debug_broadcast(self, debug_message_raw):
+    def broadcast(self, message_raw):
         for u_id in self._users:
-            self._users[u_id].ws.write_message(debug_message_raw, True)
+            self._users[u_id].ws.write_message(message_raw, True)
 
     def step(self, dt):
         if self.is_empty:
             return
 
-        pass
+        tt = WorldSnapshot()
+        raw = ''.join(str(x) for x in self._board)
+        # comp = zlib.compress(raw)
+        tt.snapshot = raw
+        zz = tt.encode_self()
+        l = len(zz)
+        self.broadcast(zz)

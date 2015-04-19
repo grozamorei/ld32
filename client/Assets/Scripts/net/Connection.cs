@@ -142,8 +142,17 @@ namespace net
             }
             else if (_state == ConnectionState.IN_WORLD)
             {
-//                if (data[4] == RoomSnapshot)
-                Debug.Log("in world command");
+                if (data[4] == WorldSnapshot.ID)
+                {
+//                    Debug.Log("snapshot received!");
+                    var snap = new WorldSnapshot(data);
+                    var s = new byte[snap.snapshot.Length];
+                    for (int i = 0; i < snap.snapshot.Length; i++)
+                    {
+                        s[i] = (byte.Parse(snap.snapshot[i].ToString()));
+                    }
+                    _game.pushSnapshot(s);
+                }
             }
         }
         

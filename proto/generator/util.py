@@ -71,7 +71,7 @@ def field_format(field_type, len, custom_enums):
         return ' h'
     elif field_type == 'int':
         return ' i'
-    elif field_type == 'string':
+    elif field_type == 'string' and isinstance(len, int):
         return ' b %is' % len
     return ''
 

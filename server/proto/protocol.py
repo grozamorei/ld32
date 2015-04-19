@@ -46,16 +46,26 @@ class DebugPackage(BaseMessage):
         fmt = "<i b"
 
         new_str = self.sender.encode("utf-8") if isinstance(self.sender, unicode) else self.sender
-        p_len += len(new_str) + 1
-        values.append(len(new_str))
-        fmt += " b"
+        if len(new_str) <= 127:
+            p_len += len(new_str) + 1
+            values.append(len(new_str))
+            fmt += " b"
+        else:
+            p_len += len(new_str) + 2
+            values.append(len(new_str))
+            fmt += " h"
         values.append(new_str)
         fmt += " " + str(len(new_str)) + "s"
 
         new_str = self.message.encode("utf-8") if isinstance(self.message, unicode) else self.message
-        p_len += len(new_str) + 1
-        values.append(len(new_str))
-        fmt += " b"
+        if len(new_str) <= 127:
+            p_len += len(new_str) + 1
+            values.append(len(new_str))
+            fmt += " b"
+        else:
+            p_len += len(new_str) + 2
+            values.append(len(new_str))
+            fmt += " h"
         values.append(new_str)
         fmt += " " + str(len(new_str)) + "s"
 
@@ -140,16 +150,26 @@ class Welcome(BaseMessage):
         fmt = "<i b"
 
         new_str = self.available_name.encode("utf-8") if isinstance(self.available_name, unicode) else self.available_name
-        p_len += len(new_str) + 1
-        values.append(len(new_str))
-        fmt += " b"
+        if len(new_str) <= 127:
+            p_len += len(new_str) + 1
+            values.append(len(new_str))
+            fmt += " b"
+        else:
+            p_len += len(new_str) + 2
+            values.append(len(new_str))
+            fmt += " h"
         values.append(new_str)
         fmt += " " + str(len(new_str)) + "s"
 
         new_str = self.random_world.encode("utf-8") if isinstance(self.random_world, unicode) else self.random_world
-        p_len += len(new_str) + 1
-        values.append(len(new_str))
-        fmt += " b"
+        if len(new_str) <= 127:
+            p_len += len(new_str) + 1
+            values.append(len(new_str))
+            fmt += " b"
+        else:
+            p_len += len(new_str) + 2
+            values.append(len(new_str))
+            fmt += " h"
         values.append(new_str)
         fmt += " " + str(len(new_str)) + "s"
 
@@ -213,9 +233,14 @@ class WorldData(BaseMessage):
         fmt = "<i b"
 
         new_str = self.name.encode("utf-8") if isinstance(self.name, unicode) else self.name
-        p_len += len(new_str) + 1
-        values.append(len(new_str))
-        fmt += " b"
+        if len(new_str) <= 127:
+            p_len += len(new_str) + 1
+            values.append(len(new_str))
+            fmt += " b"
+        else:
+            p_len += len(new_str) + 2
+            values.append(len(new_str))
+            fmt += " h"
         values.append(new_str)
         fmt += " " + str(len(new_str)) + "s"
 
@@ -236,7 +261,7 @@ class WorldData(BaseMessage):
         return struct.pack(fmt, *values)
 
 
-class RoomSnapshot(BaseMessage):
+class WorldSnapshot(BaseMessage):
     ID = 6
 
     @property
@@ -245,7 +270,7 @@ class RoomSnapshot(BaseMessage):
 
     def __init__(self):
         BaseMessage.__init__(self)
-        self.snapshot = None
+        self.snapshot = ""
 
         self._format += ""
         self._struct = struct.Struct(self._format)
@@ -255,9 +280,13 @@ class RoomSnapshot(BaseMessage):
         values = [0, self.id]
         p_len = 0
         fmt = "<i b"
-        values.append(self.snapshot)
-        p_len += 0
-        fmt += ""
+
+        new_str = self.snapshot.encode("utf-8") if isinstance(self.snapshot, unicode) else self.snapshot
+        p_len += len(new_str) + 2
+        values.append(len(new_str))
+        fmt += " h"
+        values.append(new_str)
+        fmt += " " + str(len(new_str)) + "s"
 
         values[0] = p_len
         return struct.pack(fmt, *values)

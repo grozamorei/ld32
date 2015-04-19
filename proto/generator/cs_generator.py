@@ -200,11 +200,16 @@ class CSGenerator(BaseGenerator):
 
         def read_from_byte_array(field_name, field_type, *_):
             field_name = util.format_to_camel(field_name)
-            method = reader_method(field_type)
-            if field_type in self._custom_enums:
-                f.write('%s%s = (%s)reader.%s();\n' % (TAB3, field_name, util.format_to_pascal(field_type), method, ))
-            elif method is not None:
-                f.write('%s%s = reader.%s();\n' % (TAB3, field_name, method, ))
+            if field_type == 'string' and _[1] == 'long':
+                f.write('%svar len = reader.ReadInt16();\n' % (TAB3, ))
+                f.write('%schar[] strRaw = reader.ReadChars(len);\n' % (TAB3, ))
+                f.write('%s%s = new string(strRaw);\n' % (TAB3, field_name))
+            else:
+                method = reader_method(field_type)
+                if field_type in self._custom_enums:
+                    f.write('%s%s = (%s)reader.%s();\n' % (TAB3, field_name, util.format_to_pascal(field_type), method, ))
+                elif method is not None:
+                    f.write('%s%s = reader.%s();\n' % (TAB3, field_name, method, ))
 
         cls_name = util.format_to_pascal(descriptor[0])
         f.write('%spublic %s(byte[] source)\n' % (TAB2, cls_name))

@@ -13,6 +13,7 @@ namespace game.board
     [RequireComponent(typeof(MainProxy))]
     public class BoardContainer : MonoBehaviour
     {
+        private Dictionary<byte, Color> colors;
     
         private GameObject _cellSprite;
         private byte[] _field;
@@ -29,6 +30,17 @@ namespace game.board
 
         public void createBoard (GameObject prefab, int x, int y)
         {
+            colors = new Dictionary<byte, Color>();
+            colors.Add(0, Color.white);
+            colors.Add(1, Color.red);
+            colors.Add(2, Color.green);
+            colors.Add(3, Color.blue);
+            colors.Add(4, Color.gray);
+            colors.Add(5, Color.cyan);
+            colors.Add(6, Color.magenta);
+            colors.Add(7, Color.yellow);
+            colors.Add(8, Color.clear);
+
             _cellSprite = prefab;
             maxX = x;
             maxY = y;
@@ -45,6 +57,18 @@ namespace game.board
             }
             
             _state = BoardState.INITIALIZED;
+        }
+        
+        public void pushSnapshot(byte[] newField)
+        {
+            for (int i = 0; i < newField.Length; i++)
+            {
+                if (_field[i] != newField[i])
+                {
+                    _field[i] = newField[i];
+                    _fieldVisual[i].runRotate(colors[_field[i]]);
+                }
+            }
         }
         
 //        float currentTime = 0;

@@ -8,21 +8,21 @@ public class CellRotator : MonoBehaviour {
     float endAngleAxis = 180;
     bool rotating = false;
     
-    Color currentTint = Color.white;
     Color startTint = Color.white;
-    
-    Color defaultTint = Color.white;
-    Color coloredTint = Color.red;
+    Color tartetTint = Color.red;
+    Color currentTint = Color.black;
     
     public void setColor(Color tint)
     {
         GetComponent<SpriteRenderer>().color = tint;
     }
     
-    public void runRotate()
+    public void runRotate(Color tint)
     {
         if (rotating) return;
-        GetComponent<SpriteRenderer>().color = startTint;
+        startTint = GetComponent<SpriteRenderer>().color;
+        currentTint = startTint;
+        tartetTint = tint;
         rotating = true;
         currentAngleAxis = 0;
     }
@@ -36,15 +36,8 @@ public class CellRotator : MonoBehaviour {
         currentAngleAxis = nextAxis;
         if (currentAngleAxis >= endAngleAxis/2 && currentTint == startTint)
         {
-            if (startTint == defaultTint)
-            {
-                currentTint = coloredTint;
-            }
-            else
-            {
-                currentTint = defaultTint;
-            }
-            GetComponent<SpriteRenderer>().color = currentTint;
+            GetComponent<SpriteRenderer>().color = tartetTint;
+            currentTint = tartetTint;
         }
         if (currentAngleAxis >= endAngleAxis)
         {

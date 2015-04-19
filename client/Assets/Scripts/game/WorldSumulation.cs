@@ -43,5 +43,10 @@ namespace game
         {
             _game.deployDebugConfig(config);
         }
+        
+        public void pushSnapshot(byte[] snapshot)
+        {
+            _board.pushSnapshot(snapshot);
+        }
     }
 }

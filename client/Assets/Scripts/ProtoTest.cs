@@ -179,15 +179,18 @@ namespace proto
         }
     }
 
-    public class RoomSnapshot : BaseMessage
+    public class WorldSnapshot : BaseMessage
     {
         public static byte ID { get { return 6; } }
         public override byte getID() { return 6; }
-        public readonly byte[] snapshot;
+        public readonly string snapshot;
     
-        public RoomSnapshot(byte[] source)
+        public WorldSnapshot(byte[] source)
         {
             initReceiveStream(source);
+            var len = reader.ReadInt16();
+            char[] strRaw = reader.ReadChars(len);
+            snapshot = new string(strRaw);
         }
     }
 

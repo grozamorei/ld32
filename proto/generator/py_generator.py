@@ -177,14 +177,28 @@ class PYGenerator(BaseGenerator):
             field_name = descriptor[field_i][0]
             field_type = descriptor[field_i][1]
             if field_type == 'string':
-                # field_fixed_size = descriptor[field_i][2]
-                f.write('\n')
-                f.write('%snew_str = self.%s.encode("utf-8") if isinstance(self.%s, unicode) else self.%s\n' % (TAB2, field_name, field_name, field_name))
-                f.write('%sp_len += len(new_str) + 1\n' % TAB2)
-                f.write('%svalues.append(len(new_str))\n' % TAB2)
-                f.write('%sfmt += " b"\n' % TAB2)
-                f.write('%svalues.append(new_str)\n' % TAB2)
-                f.write('%sfmt += " " + str(len(new_str)) + "s"\n' % TAB2)
+                l = descriptor[field_i][2]
+                if l == 'long':
+                    f.write('\n')
+                    f.write('%snew_str = self.%s.encode("utf-8") if isinstance(self.%s, unicode) else self.%s\n' % (TAB2, field_name, field_name, field_name))
+                    f.write('%sp_len += len(new_str) + 2\n' % TAB2)
+                    f.write('%svalues.append(len(new_str))\n' % TAB2)
+                    f.write('%sfmt += " h"\n' % TAB2)
+                    f.write('%svalues.append(new_str)\n' % TAB2)
+                    f.write('%sfmt += " " + str(len(new_str)) + "s"\n' % TAB2)
+                else:
+                    f.write('\n')
+                    f.write('%snew_str = self.%s.encode("utf-8") if isinstance(self.%s, unicode) else self.%s\n' % (TAB2, field_name, field_name, field_name))
+                    f.write('%sif len(new_str) <= 127:\n' % TAB2)
+                    f.write('%sp_len += len(new_str) + 1\n' % TAB3)
+                    f.write('%svalues.append(len(new_str))\n' % TAB3)
+                    f.write('%sfmt += " b"\n' % TAB3)
+                    f.write('%selse:\n' % TAB2)
+                    f.write('%sp_len += len(new_str) + 2\n' % TAB3)
+                    f.write('%svalues.append(len(new_str))\n' % TAB3)
+                    f.write('%sfmt += " h"\n' % TAB3)
+                    f.write('%svalues.append(new_str)\n' % TAB2)
+                    f.write('%sfmt += " " + str(len(new_str)) + "s"\n' % TAB2)
                 last_str = True
             else:
                 if last_str:
