@@ -39,6 +39,17 @@ namespace game.board
                 var posDiff = dragAnchor - Input.mousePosition;
                 var worldCoordDiff = new Vector3(posDiff.x / scale, posDiff.y / scale);
                 _cam.transform.position = new Vector3(camAnchor.x + worldCoordDiff.x, camAnchor.y + worldCoordDiff.y, _cam.transform.position.z);
+                return;
+            }
+            
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            {
+                _cam.orthographicSize -= 0.5f;
+            }
+            else
+            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            {
+                _cam.orthographicSize += 0.5f;
             }
         }
     }
