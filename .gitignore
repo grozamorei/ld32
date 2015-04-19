@@ -1,6 +1,7 @@
 Build/
 Library/
 Temp/
+static/
 .idea
 *.csproj
 *.sln
