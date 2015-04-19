@@ -8,11 +8,13 @@ namespace game
     public class CheatMenuLogic : MonoBehaviour
     {
         private MainProxy _game;
+        private WorldSimulation _sim;
         private CheatMenuHook _uiHook;
         
         void Start()
         {
             _game = gameObject.GetComponent<MainProxy>();
+            _sim = gameObject.GetComponent<WorldSimulation>();
             _uiHook = FindObjectOfType<CheatMenuHook>();
             _uiHook.hideContent();
         }
