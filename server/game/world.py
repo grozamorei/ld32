@@ -19,7 +19,7 @@ class World():
         for i in range(size_x * size_y):
             self._board.append(Cell(i))
 
-        self._free_ids = range(1, 120)
+        self._free_ids = range(1, 9)
         self._users = {}
 
         self._raw_metadata = metadata.encode_self()
