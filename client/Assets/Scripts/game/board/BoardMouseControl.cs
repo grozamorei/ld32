@@ -17,6 +17,12 @@ namespace game.board
         private Vector3 dragAnchor;
         private Vector3 camAnchor;
         private float scale;
+        private int[] figure;
+        
+        public void attach(int[] figure)
+        {
+            this.figure = figure;
+        }
 
         public void update ()
         {
@@ -31,6 +37,10 @@ namespace game.board
             
             if (Input.GetMouseButtonUp(0))
             {
+                if (Input.mousePosition == dragAnchor)
+                {
+                    //click
+                }
                 drag = false;
             }
             
@@ -50,6 +60,14 @@ namespace game.board
             if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
                 _cam.orthographicSize += 0.5f;
+            }
+            
+            if (figure != null && figure.Length > 0)
+            {
+                var w = _cam.ScreenToWorldPoint(Input.mousePosition);
+                w.x = Mathf.Floor(w.x);
+                w.y = Mathf.Ceil(w.y);
+                Debug.Log(w);
             }
         }
     }

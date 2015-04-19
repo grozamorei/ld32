@@ -26,7 +26,14 @@ namespace game
         
         void onCheatState(CheatState state, int[] figure)
         {
-            Debug.Log(state);
+            if (state == CheatState.NONE)
+            {
+                _sim.attachToDrag(null);
+            } 
+            else
+            {
+                _sim.attachToDrag(figure);
+            }
         }
         
         void Update()

@@ -30,5 +30,11 @@ namespace game
             
             _drag.update();
         }
+        
+        public void attachToDrag(int[] figure)
+        {
+            //Debug.Log(figure.Length);
+            _drag.attach(figure);
+        }
     }
 }
