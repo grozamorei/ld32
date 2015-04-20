@@ -180,6 +180,12 @@ namespace net
             _socket.Send(d.encode());
         }
         
+        public void deploySeed(int location)
+        {
+            var d = new DeploySeed(location);
+            _socket.Send(d.encode());
+        }
+        
         private void _storeAddPartial(byte[] chunk)
         {
             if (_partial_message != null)

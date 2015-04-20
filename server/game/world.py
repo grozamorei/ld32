@@ -80,6 +80,9 @@ class World():
                 n = self.temp[target_x][target_y]
                 self._board[n.idx].reset()
 
+    def deploy_seed(self, at_location):
+        pass
+
     def broadcast(self, message_raw):
         for u_id in self._users:
             self._users[u_id].ws.write_message(message_raw, True)

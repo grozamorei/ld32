@@ -2,7 +2,7 @@ import logging
 import struct
 from tornado.websocket import WebSocketHandler
 from proto.protocol import Welcome, DebugPackage, RequestEnterWorld, ResponseEnterWorld, EnterWorldStatus, \
-    DebugDeployConfiguration, DeployBomb
+    DebugDeployConfiguration, DeployBomb, DeploySeed
 from game.user import User
 
 LOGGER = logging.getLogger(__name__.split('.')[-1])
@@ -102,6 +102,12 @@ class WSHandler(WebSocketHandler):
                 LOGGER.info('%s deployed bomb at %i' % (self._user.name, d.target, ))
 
                 self._world.deploy_bomb(d.target)
+            elif message_id == DeploySeed.ID:
+                d = DeploySeed()
+                d.unpack_from(message)
+                LOGGER.info('%s deployed seed at %i' % (self._user.name, d.target, ))
+
+                self._world.deploy_seed(d.target)
             else:
                 LOGGER.warning('wrong order messages after authorize. got: %i' % message_id)
         else:
