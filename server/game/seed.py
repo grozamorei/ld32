@@ -9,7 +9,7 @@ class Seed():
     def __init__(self, owner_id, location):
         self.owner_id = owner_id
         self.location = location
-        self.health = 1
+        self.health = 3
         self.configuration = 0
 
         self.new_cmd = NewSeed()

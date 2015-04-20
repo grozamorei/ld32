@@ -89,7 +89,7 @@ namespace game.ui
             _sim.attachToDrag2(null);
             _targetInstance.transform.position = new Vector3(-100f, 100f);
             
-            bombCooldown = Time.timeSinceLevelLoad + 5f;
+            bombCooldown = Time.timeSinceLevelLoad + 3f;
             bombState = BombState.RECHARGE;
             bombButtonText.text = "Charging";
             bombButton.interactable = false;
@@ -100,7 +100,7 @@ namespace game.ui
             _sim.attachToDrag3(null);
             _seedTargetInstance.transform.position = new Vector3(-100f, 100f);
             
-            seedCooldown = Time.timeSinceLevelLoad + 5f;
+            seedCooldown = Time.timeSinceLevelLoad + 6f;
             seedState = SeedState.RECHARGE;
             seedButtonText.text = "Charging";
             seedButton.interactable = false;
@@ -156,6 +156,11 @@ namespace game.ui
                 bombButtonText.text = "Bomb ready";
                 bombButton.interactable = true;
             }
+            else
+            if (bombCooldown != float.MaxValue)
+            {
+                bombButtonText.text = ((int)(bombCooldown - Time.timeSinceLevelLoad)).ToString();
+            }
             
             if (seedCooldown < Time.timeSinceLevelLoad)
             {
@@ -163,6 +168,11 @@ namespace game.ui
                 seedState = SeedState.WAITING;
                 seedButtonText.text = "Seed ready";
                 seedButton.interactable = true;
+            }
+            else
+            if (seedCooldown != float.MaxValue)
+            {
+                seedButtonText.text = ((int)(seedCooldown - Time.timeSinceLevelLoad)).ToString();
             }
         }
     }
