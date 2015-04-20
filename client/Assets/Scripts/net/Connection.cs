@@ -52,7 +52,9 @@ namespace net
                 return;
             }
 
+            Profiler.BeginSample("socket.recv");
             byte[] data = _socket.Recv ();
+            Profiler.EndSample();
             
             if (data == null || data.Length == 0) return;
             
@@ -151,14 +153,24 @@ namespace net
             {
                 if (data[4] == WorldSnapshot.ID)
                 {
+                    Profiler.BeginSample("recv.snapshot");
 //                    Debug.Log("snapshot received!");
+                    Profiler.BeginSample("unpack snapshot");
                     var snap = new WorldSnapshot(data);
+                    Profiler.EndSample();
+                    
+                    Profiler.BeginSample("decode snapshot");
                     var s = new byte[snap.snapshot.Length];
                     for (int i = 0; i < snap.snapshot.Length; i++)
                     {
                         s[i] = (byte.Parse(snap.snapshot[i].ToString()));
                     }
+                    Profiler.EndSample();
+                    
+                    Profiler.BeginSample("push snapshot");
                     _game.pushSnapshot(s);
+                    Profiler.EndSample();
+                    Profiler.EndSample();
                 }
                 else
                 if (data[4] == NewSeed.ID)
