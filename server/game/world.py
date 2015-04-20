@@ -57,6 +57,9 @@ class World():
         for c in configuration:
             self._board[c].user_id = user_id
 
+    def deploy_bomb(self, at_location):
+        pass
+
     def broadcast(self, message_raw):
         for u_id in self._users:
             self._users[u_id].ws.write_message(message_raw, True)

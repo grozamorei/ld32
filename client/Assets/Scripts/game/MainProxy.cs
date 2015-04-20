@@ -93,7 +93,7 @@ namespace game
         
         public void deployBomb(int location)
         {
-            Debug.Log("dropping bomb in: " + location);
+            _connection.deployBomb(location);
         }
         
         public void pushSnapshot(byte[] snapshot)

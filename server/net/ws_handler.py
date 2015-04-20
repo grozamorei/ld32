@@ -2,7 +2,7 @@ import logging
 import struct
 from tornado.websocket import WebSocketHandler
 from proto.protocol import Welcome, DebugPackage, RequestEnterWorld, ResponseEnterWorld, EnterWorldStatus, \
-    DebugDeployConfiguration
+    DebugDeployConfiguration, DeployBomb
 from game.user import User
 
 LOGGER = logging.getLogger(__name__.split('.')[-1])
@@ -96,6 +96,12 @@ class WSHandler(WebSocketHandler):
 
                 if self._status == _AuthStatus.AUTHORIZED:
                     self._user.world.broadcast(d.encode_self())
+            elif message_id == DeployBomb.ID:
+                d = DeployBomb()
+                d.unpack_from(message)
+                LOGGER.info('%s deployed bomb at %i' % (self._user.name, d.target, ))
+
+                self._world.deploy_bomb(d.target)
             else:
                 LOGGER.warning('wrong order messages after authorize. got: %i' % message_id)
         else:

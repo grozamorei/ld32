@@ -174,6 +174,12 @@ namespace net
             _socket.Send(d.encode());
         }
         
+        public void deployBomb(int location)
+        {
+            var d = new DeployBomb(location);
+            _socket.Send(d.encode());
+        }
+        
         private void _storeAddPartial(byte[] chunk)
         {
             if (_partial_message != null)
