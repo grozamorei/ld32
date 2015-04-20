@@ -17,7 +17,7 @@ public class CellRotator : MonoBehaviour {
     
     void Start()
     {
-        nextTime = Time.timeSinceLevelLoad + Random.Range(1f, 20f);
+        nextTime = Time.timeSinceLevelLoad + Random.Range(1f, 5f);
     }
     
     public void on()
@@ -29,10 +29,10 @@ public class CellRotator : MonoBehaviour {
     
     public void off()
     {
-//        if (nanoMachine.gameObject.activeSelf)
-//            nanoMachine.SetBool("death", true);
-//        deathTime = Time.timeSinceLevelLoad;
-        instantOff();
+        if (nanoMachine.gameObject.activeSelf)
+            nanoMachine.SetBool("death", true);
+        deathTime = Time.timeSinceLevelLoad;
+        //instantOff();
     }
     
     public void instantOff()
@@ -55,7 +55,7 @@ public class CellRotator : MonoBehaviour {
         {
             if (nanoMachine.GetBool("death"))
             {
-                if (Time.timeSinceLevelLoad - deathTime > 0.8f)
+                if (Time.timeSinceLevelLoad - deathTime > 0.65f)
                 {
                     instantOff();
                     return;
@@ -63,10 +63,8 @@ public class CellRotator : MonoBehaviour {
             }
             if (Time.timeSinceLevelLoad > nextTime)
             {
-                var tt = Random.Range(0, 4);
-//                Debug.Log("new tt! " + tt);
-                nanoMachine.SetInteger("IdleIndex", tt);
-                nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
+                nanoMachine.SetInteger("IdleIndex", Random.Range(0, 4));
+                nextTime = Time.timeSinceLevelLoad + Random.Range(1f, 5f);
                 switchTime = Time.timeSinceLevelLoad;
                 animChanged = true;
             }
