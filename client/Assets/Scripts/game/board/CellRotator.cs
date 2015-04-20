@@ -21,7 +21,6 @@ public class CellRotator : MonoBehaviour {
     
     void Start()
     {
-        nanoMachine.SetInteger("IdleIndex", -1);
         nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
     }
     
