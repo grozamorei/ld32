@@ -74,6 +74,7 @@ class WSHandler(WebSocketHandler):
                         res.my_id = u.byte_id
                         self.write_message(res.encode_self(), True)
                         self.write_message(u.world.metadata, True)
+                        self._world.push_seeds(u)
                         self._status = _AuthStatus.AUTHORIZED
                     else:
                         LOGGER.info('User %s was refused to enter the world %s' % (name, u.world._name))
@@ -107,7 +108,7 @@ class WSHandler(WebSocketHandler):
                 d.unpack_from(message)
                 LOGGER.info('%s deployed seed at %i' % (self._user.name, d.target, ))
 
-                self._world.deploy_seed(d.target)
+                self._world.deploy_seed(self._user.byte_id, d.target)
             else:
                 LOGGER.warning('wrong order messages after authorize. got: %i' % message_id)
         else:

@@ -45,6 +45,13 @@ namespace net
         
         void Update()
         {
+            if (!string.IsNullOrEmpty(_socket.Error))
+            {
+                Debug.LogWarning(_socket.Error);
+                Start();
+                return;
+            }
+
             byte[] data = _socket.Recv ();
             
             if (data == null || data.Length == 0) return;
@@ -119,7 +126,7 @@ namespace net
                 }
                 else
                 {
-                    Debug.LogError("expected auth response, got :" + data[4].ToString() + " instead");
+                    Debug.LogError("expected auth response or new seed, got :" + data[4].ToString() + " instead");
                     return;
                 }
             }
@@ -152,6 +159,20 @@ namespace net
                         s[i] = (byte.Parse(snap.snapshot[i].ToString()));
                     }
                     _game.pushSnapshot(s);
+                }
+                else
+                if (data[4] == NewSeed.ID)
+                {
+                    Debug.Log("new seed received ");
+                    var seed = new NewSeed(data);
+                    _game.pushSeed(seed.location, seed.owner);
+                }
+                else
+                if (data[4] == SeedDestroyed.ID)
+                {
+                    var seedD = new SeedDestroyed(data);
+                    Debug.Log("seed dest: " + seedD.location);
+                    _game.destroySeed(seedD.location);
                 }
             }
         }

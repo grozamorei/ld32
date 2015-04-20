@@ -58,5 +58,15 @@ namespace game
         {
             _board.pushSnapshot(snapshot);
         }
+        
+        public void pushSeed(int location, byte owner_id)
+        {
+            _board.pushSeed(location, owner_id);
+        }
+
+        public void destroySeed (int location)
+        {
+            _board.destroySeed(location);
+        }
     }
 }

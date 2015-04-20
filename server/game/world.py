@@ -1,7 +1,7 @@
 import logging
 import zlib
 from game.cell import Cell
-from proto.protocol import WorldData, WorldSnapshot
+from proto.protocol import WorldData, WorldSnapshot, NewSeed, SeedDestroyed
 
 LOGGER = logging.getLogger(__name__.split('.')[-1])
 
@@ -44,6 +44,12 @@ class World():
         self._users.setdefault(u_id, user)
         LOGGER.info('ADDED user [%i]:%s. new population: %i' % (u_id, user.name, len(self._users), ))
 
+    def push_seeds(self, user):
+        for u_id in self._users:
+            u = self._users[u_id]
+            for s in u.seeds:
+                user.ws.write_message(s.new_cmd, True)
+
     def remove_user(self, user):
         u_id = user.byte_id
         self._free_ids.append(u_id)
@@ -52,6 +58,9 @@ class World():
         else:
             LOGGER.error('removing already absent user! %s ' % user.name)
         LOGGER.info('REMOVED user [%i]:%s. new population: %i' % (u_id, user.name, len(self._users), ))
+
+        for s in user.seeds:
+            self.broadcast(s.destr_cmd)
 
     def debug_deploy_configuration(self, user_id, configuration):
         LOGGER.info('user [%i]%s deployed configuration: %r' % (user_id, self._users[user_id].name, configuration))
@@ -80,8 +89,35 @@ class World():
                 n = self.temp[target_x][target_y]
                 self._board[n.idx].reset()
 
-    def deploy_seed(self, at_location):
-        pass
+        for u_id in self._users:
+            u = self._users[u_id]
+            for s in u.seeds:
+                if s.location == at_location:
+                    s.damage(1)
+                    if s.is_dead():
+                        u.remove_seed(at_location)
+                        d = SeedDestroyed()
+                        d.location = at_location
+                        self.broadcast(d.encode_self())
+                    break
+
+    def deploy_seed(self, user_id, at_location):
+        if at_location < 0:
+            return
+        if at_location > len(self._board):
+            return
+
+        for u_id in self._users:
+            u = self._users[u_id]
+            for s in u.seeds:
+                if s.location == at_location:
+                    return
+
+        self._users[user_id].add_seed(at_location)
+        new_seed = NewSeed()
+        new_seed.location = at_location
+        new_seed.owner = user_id
+        self.broadcast(new_seed.encode_self())
 
     def broadcast(self, message_raw):
         for u_id in self._users:

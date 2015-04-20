@@ -31,6 +31,7 @@ namespace game
         
         public GameObject cellPrefab;
         public GameObject fatmanPrefab;
+        public GameObject seedPrefab;
         
         private Connection _connection;
         private LoginScreenLogic _loginMenu;
@@ -105,6 +106,16 @@ namespace game
         public void pushSnapshot(byte[] snapshot)
         {
             _simulation.pushSnapshot(snapshot);
+        }
+        
+        public void pushSeed(int location, byte ownerId)
+        {
+            _simulation.pushSeed(location, ownerId);
+        }
+        
+        public void destroySeed(int location)
+        {
+            _simulation.destroySeed(location);
         }
     }
 }

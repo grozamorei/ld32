@@ -18,6 +18,11 @@ namespace game.board
         private GameObject _cellSprite;
         private byte[] _field;
         private CellRotator[] _fieldVisual;
+        private MainProxy _mainP;
+        private GameObject seedPrefab;
+        
+//        private List<GameObject> seedsVisual = new List<GameObject>();
+        private Dictionary<int, GameObject> seedsVisual = new Dictionary<int, GameObject>();
         
         [EditorReadOnly]
         public BoardState _state = BoardState.NONE;
@@ -58,6 +63,8 @@ namespace game.board
             }
             
             _state = BoardState.INITIALIZED;
+            _mainP = FindObjectOfType<MainProxy>();
+            seedPrefab = _mainP.seedPrefab;
         }
         
         public void pushSnapshot(byte[] newField)
@@ -79,29 +86,27 @@ namespace game.board
             }
         }
         
-//        float currentTime = 0;
-//        float targetTime = 0.7f;
-//        bool running = false;
-//        
-//        int calcNeighbours (int x, int y)
-//        {
-//            int n = 0;
-//            for (int i = x-1; i <= x+1; i++) {
-//                for (int j = y-1; j <= y+1; j++) {
-//                    if (i == x && j == y)
-//                        continue;
-//                    int newI = i == -1 ? wLen - 1 : i;
-//                    newI = i == wLen ? 0 : newI;
-//                    int newJ = j == -1 ? hLen - 1 : j;
-//                    newJ = j == hLen ? 0 : newJ;
-//                    
-//                    if (field [newI, newJ])
-//                        n++;
-//                }
-//            }
-//            
-//            return n;
-//        }
+        public void pushSeed(int location, byte owner)
+        {
+            var seed = Instantiate(seedPrefab);
+            var loc = _fieldVisual[location].transform.position;
+            seed.GetComponent<SpriteRenderer>().color = colors[owner];
+            seed.transform.position = loc;
+            this.seedsVisual.Add(location, seed);
+        }
+
+        public void destroySeed (int location)
+        {
+            foreach (var kv in this.seedsVisual)
+            {
+                if (kv.Key == location)
+                {
+                    this.seedsVisual.Remove(kv.Key);
+                    GameObject.DestroyImmediate(kv.Value);
+                    break;
+                }
+            }
+        }
         
         void Update ()
         {
