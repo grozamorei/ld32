@@ -8,23 +8,31 @@ public class CellRotator : MonoBehaviour {
     float endAngleAxis = 180;
     bool rotating = false;
     
+    public GameObject nanoMachine;
+    public SkinnedMeshRenderer mesh;
+    
     Color startTint = Color.white;
     Color tartetTint = Color.red;
     Color currentTint = Color.black;
     
     public void setColor(Color tint)
     {
-        GetComponent<SpriteRenderer>().color = tint;
+        mesh.material.SetColor("_TintColor", new Color(tint.r, tint.g, tint.b, 0.5f));
+//        GetComponent<SpriteRenderer>().color = tint;
+//        Renderer rend = GetComponent<Renderer>();
+//        rend.material.shader = Shader.Find("Specular");
+//        rend.material.SetColor("_SpecColor", Color.red);
     }
     
     public void runRotate(Color tint)
     {
         if (rotating) return;
-        startTint = GetComponent<SpriteRenderer>().color;
-        currentTint = startTint;
-        tartetTint = tint;
-        rotating = true;
-        currentAngleAxis = 0;
+        mesh.material.SetColor("_TintColor", new Color(tint.r, tint.g, tint.b, 0.5f));
+//        startTint = GetComponent<SpriteRenderer>().color;
+//        currentTint = startTint;
+//        tartetTint = tint;
+//        rotating = true;
+//        currentAngleAxis = 0;
     }
     void Update () {
         if (!rotating) return;

@@ -31,7 +31,7 @@ namespace game.board
         public void createBoard (GameObject prefab, int x, int y)
         {
             colors = new Dictionary<byte, Color>();
-            colors.Add(0, Color.white);
+            colors.Add(0, Color.black);
             colors.Add(1, Color.red);
             colors.Add(2, Color.green);
             colors.Add(3, Color.blue);

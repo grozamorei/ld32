@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 463242}
   - 114: {fileID: 11467502}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: hook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ GameObject:
   - 223: {fileID: 22363256}
   - 114: {fileID: 11427272}
   - 114: {fileID: 11425184}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

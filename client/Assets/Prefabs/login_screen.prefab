@@ -80,7 +80,7 @@ GameObject:
   - 224: {fileID: 22424490}
   - 222: {fileID: 22247534}
   - 114: {fileID: 11405078}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: input_text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - 222: {fileID: 22295732}
   - 114: {fileID: 11430870}
   - 114: {fileID: 11473082}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: username_input
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - 224: {fileID: 22422846}
   - 222: {fileID: 22255210}
   - 114: {fileID: 11457694}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - 223: {fileID: 22379206}
   - 114: {fileID: 11494306}
   - 114: {fileID: 11418648}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
