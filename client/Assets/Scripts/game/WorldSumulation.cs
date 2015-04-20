@@ -23,7 +23,7 @@ namespace game
             _data = data;
             
             _drag = new BoardMouseControl();
-            _drag.initialize(Camera.main, _board, deployDebugConfig);
+            _drag.initialize(_game.myId, Camera.main, _board, deployDebugConfig);
             _cellPrefab = cellPrefab;
         }
         

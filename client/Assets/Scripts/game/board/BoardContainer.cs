@@ -39,7 +39,7 @@ namespace game.board
             colors.Add(5, Color.cyan);
             colors.Add(6, Color.magenta);
             colors.Add(7, Color.yellow);
-            colors.Add(8, Color.clear);
+            colors.Add(8, Color.white);
 
             _cellSprite = prefab;
             maxX = x;
@@ -52,8 +52,8 @@ namespace game.board
                     z.transform.position = new Vector2 (j + 0.5f, -i - 0.5f);
                     z.transform.parent = transform;
                     z.name = (i * maxX).ToString() + '_' + j.ToString();
-                    z.SetActive(false);
                     _fieldVisual[i * maxX + j] = z.GetComponent<CellRotator> ();
+                    _fieldVisual[i * maxX + j].off();
                 }
             }
             
@@ -69,10 +69,10 @@ namespace game.board
                     _field[i] = newField[i];
                     if (_field[i] == 0)
                     {
-                        _fieldVisual[i].gameObject.SetActive(false);
+                        _fieldVisual[i].off ();
                     } else
                     {
-                        _fieldVisual[i].gameObject.SetActive(true);
+                        _fieldVisual[i].on();
                         _fieldVisual[i].runRotate(colors[_field[i]]);
                     }
                 }

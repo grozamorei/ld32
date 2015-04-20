@@ -9,9 +9,11 @@ namespace game.board
         private BoardContainer _board;
         public delegate void onDeploy(List<int> value);
         private onDeploy _onDeploy;
+        private byte myId;
 
-        public void initialize(Camera cam, BoardContainer board, onDeploy call)
+        public void initialize(byte myId, Camera cam, BoardContainer board, onDeploy call)
         {
+            this.myId = myId;
             _cam = cam;
             _board = board;
             _onDeploy = call;
@@ -30,6 +32,17 @@ namespace game.board
         
         public void attach(GameObject cellPrefab, int[] figure)
         {
+            var colors = new Dictionary<byte, Color>();
+            colors.Add(0, Color.white);
+            colors.Add(1, Color.red);
+            colors.Add(2, Color.green);
+            colors.Add(3, Color.blue);
+            colors.Add(4, Color.gray);
+            colors.Add(5, Color.cyan);
+            colors.Add(6, Color.magenta);
+            colors.Add(7, Color.yellow);
+            colors.Add(8, Color.white);
+
             if (tempObject != null)
                 GameObject.DestroyImmediate(tempObject.gameObject);
             if (figure != null && figure.Length > 0)
@@ -45,7 +58,7 @@ namespace game.board
                     c.transform.parent = tempObject;
                     c.transform.position = coord;
                     
-                    c.GetComponent<CellRotator>().setColor(Color.red);
+                    c.GetComponent<CellRotator>().setColor(colors[myId]);
                 }
             }
             this.figure = figure;
@@ -84,18 +97,25 @@ namespace game.board
                     //click
                     if (figure != null)
                     {
-                        var w = _cam.ScreenToWorldPoint(Input.mousePosition);
-                        w.x = Mathf.Floor(w.x);
-                        w.y = Mathf.Abs(Mathf.Ceil(w.y));
-                        var t = new List<int>();
+                        var w = tempObject.position;
+//                        w.x = Mathf.Floor(w.x);
+//                        w.y = Mathf.Abs(Mathf.Ceil(w.y));
+                            var t = new List<int>();
                         for (int i = 0; i < figure.Length; i+=2)
                         {
-                            int coord = (figure[i+1] + Mathf.FloorToInt(w.y)) * _board.maxX + (figure[i] + Mathf.FloorToInt(w.x));
+                            int coord = (figure[i+1] + Mathf.FloorToInt(Mathf.Abs(w.y))) * _board.maxX + (figure[i] + Mathf.FloorToInt(w.x));
                             if (coord < 0) break;
                             if (coord >= _board.maxX * _board.maxY) break;
                             t.Add(coord);
                         }
                         _onDeploy(t);
+//                        var v3 = Input.mousePosition;
+//                        v3.z = -_cam.transform.position.z;
+//                        v3 = Camera.main.ScreenToWorldPoint(v3);
+//                        if (tempObject != null)
+//                        {
+//                            tempObject.position = new Vector3(Mathf.Floor(v3.x), Mathf.Ceil(v3.y));
+//                        }
                     }
                 }
                 drag = false;
@@ -169,12 +189,12 @@ namespace game.board
             
             if (figure != null && figure.Length > 0)
             {
-                var w = _cam.ScreenToWorldPoint(Input.mousePosition);
-                w.x = Mathf.Floor(w.x);
-                w.y = Mathf.Ceil(w.y);
+                var v3 = Input.mousePosition;
+                v3.z = -_cam.transform.position.z;
+                v3 = Camera.main.ScreenToWorldPoint(v3);
                 if (tempObject != null)
                 {
-                    tempObject.position = new Vector3(w.x, w.y);
+                    tempObject.position = new Vector3(Mathf.Floor(v3.x), Mathf.Ceil(v3.y));
                 }
             }
         }

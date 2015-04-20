@@ -24,6 +24,16 @@ public class CellRotator : MonoBehaviour {
         nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
     }
     
+    public void on()
+    {
+        nanoMachine.gameObject.SetActive(true);
+    }
+    
+    public void off()
+    {
+        nanoMachine.gameObject.SetActive(false);
+    }
+    
     public void setColor(Color tint)
     {
         mesh.material.SetColor("_TintColor", new Color(tint.r, tint.g, tint.b, 0.5f));
@@ -41,46 +51,43 @@ public class CellRotator : MonoBehaviour {
     }
     void Update () {
 
-        if (Time.timeSinceLevelLoad > nextTime)
+        if (nanoMachine.gameObject.activeSelf)
         {
-            nanoMachine.SetInteger("IdleIndex", Random.Range(0, 4));
-            nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
-            switchTime = Time.timeSinceLevelLoad;
-            animChanged = true;
-        }
-        else
-        {
-            if (animChanged && Time.timeSinceLevelLoad - switchTime > 1f)
+            if (Time.timeSinceLevelLoad > nextTime)
             {
-                nanoMachine.SetInteger("IdleIndex", -1);
-                animChanged = false;
-                //Debug.Log(nanoMachine.GetCurrentAnimatorStateInfo(0).normalizedTime);
-//                nanoMachine.GetCurrentAnimatorStateInfo(0).
-//                if (nanoMachine.GetInteger("IdleIndex"))
-//                {
-//                    nanoMachine.SetInteger("IdleIndex", -1);
-//                    animChanged = false;
-//                }
+                nanoMachine.SetInteger("IdleIndex", Random.Range(0, 4));
+                nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
+                switchTime = Time.timeSinceLevelLoad;
+                animChanged = true;
+            }
+            else
+            {
+                if (animChanged && Time.timeSinceLevelLoad - switchTime > 1f)
+                {
+                    nanoMachine.SetInteger("IdleIndex", -1);
+                    animChanged = false;
+                }
             }
         }
+        
 
-        if (!rotating) return;
-        
-	    var moveAmount = Time.smoothDeltaTime * rotationSpeed;
-        var nextAxis = currentAngleAxis + moveAmount;
-        
-        transform.rotation = Quaternion.AngleAxis(nextAxis, new Vector3(1f, 1f));
-        currentAngleAxis = nextAxis;
-        if (currentAngleAxis >= endAngleAxis/2 && currentTint == startTint)
-        {
-            GetComponent<SpriteRenderer>().color = tartetTint;
-            currentTint = tartetTint;
-        }
-        if (currentAngleAxis >= endAngleAxis)
-        {
-            currentAngleAxis = 0;
-            rotating = false;
-            startTint = currentTint;
-        }
+//        if (!rotating) return;
+//        
+//	    var moveAmount = Time.smoothDeltaTime * rotationSpeed;
+//        var nextAxis = currentAngleAxis + moveAmount;
+//        
+//        transform.rotation = Quaternion.AngleAxis(nextAxis, new Vector3(1f, 1f));
+//        currentAngleAxis = nextAxis;
+//        if (currentAngleAxis >= endAngleAxis/2 && currentTint == startTint)
+//        {
+//            GetComponent<SpriteRenderer>().color = tartetTint;
+//            currentTint = tartetTint;
+//        }
+//        if (currentAngleAxis >= endAngleAxis)
+//        {
+//            currentAngleAxis = 0;
+//            rotating = false;
+//            startTint = currentTint;
+//        }
 	}
 }
