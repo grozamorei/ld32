@@ -271,7 +271,7 @@ namespace game.board
                 var v3 = Input.mousePosition;
                 v3.z = -_cam.transform.position.z;
                 v3 = Camera.main.ScreenToWorldPoint(v3);
-                targetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, 0);
+                targetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, -0.001f);
             }
             
             if (seedTargetObject != null)
@@ -279,7 +279,7 @@ namespace game.board
                 var v3 = Input.mousePosition;
                 v3.z = -_cam.transform.position.z;
                 v3 = Camera.main.ScreenToWorldPoint(v3);
-                seedTargetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, 0);
+                seedTargetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, -0.001f);
             }
         }
     }
