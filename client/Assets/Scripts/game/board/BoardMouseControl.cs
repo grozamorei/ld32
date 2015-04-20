@@ -49,6 +49,9 @@ namespace game.board
         private Transform targetObject;
         private Dictionary<byte, Color> colors;
         
+        bool canDeployDebug = false;
+        bool canBombDeploy = false;
+        
         public void attach(GameObject cellPrefab, int[] figure)
         {
             if (tempObject != null)
@@ -112,6 +115,9 @@ namespace game.board
                 dragAnchor = Input.mousePosition;
                 camAnchor = _cam.transform.position;
                 scale = Screen.width / (Mathf.Abs(_cam.transform.position.z) * 2f);
+                
+                canBombDeploy = targetObject != null;
+                canDeployDebug = tempObject != null;
                 return;
             }
             
@@ -119,7 +125,7 @@ namespace game.board
             {
                 if (Input.mousePosition == dragAnchor)
                 {
-                    if (targetObject != null)
+                    if (targetObject != null && canBombDeploy)
                     {
                         if (_abHook == null)
                             _abHook = GameObject.FindObjectOfType<AbilitiesMenuHook>();
@@ -129,7 +135,7 @@ namespace game.board
                         _abHook.onBombDeployed();
                     }
                     else
-                    if (figure != null)
+                    if (figure != null && canDeployDebug)
                     {
                         var w = tempObject.position;
                             var t = new List<int>();

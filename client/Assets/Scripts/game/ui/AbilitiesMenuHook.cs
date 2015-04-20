@@ -63,6 +63,10 @@ namespace game.ui
         {
             //Debug.Log("deployBombHere");
             // launch cooldowns
+            buttonText.text = "Bomb ready";
+            state = AbilState.WAITING;
+            _sim.attachToDrag2(null);
+            _targetInstance.transform.position = new Vector3(-100f, 100f);
         }
         
         public void onClick()
