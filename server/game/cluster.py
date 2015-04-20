@@ -22,7 +22,7 @@ class WorldCluster():
             if w.can_accept:
                 return world_name
 
-        new_name = u'мир#'.encode('utf-8') + str(self._next_world)
+        new_name = u'world#'.encode('utf-8') + str(self._next_world)
         self._next_world += 1
         new_world = World(new_name, 64, 64, 2000, 10)
         self._worlds.setdefault(new_name, new_world)
@@ -30,7 +30,7 @@ class WorldCluster():
 
     def get_free_name(self):
         self._next_user += 1
-        return u'вася'.encode('utf-8') + str(self._next_user)
+        return u'user#'.encode('utf-8') + str(self._next_user)
 
     def can_enter(self, user_name, world_name):
         return True
