@@ -97,6 +97,12 @@ namespace game
             _connection.deployBomb(location);
         }
         
+        public void deploySeed(int location)
+        {
+            //_connection.deployBomb(location);
+            Debug.LogWarning("seed was deployed here");
+        }
+        
         public void pushSnapshot(byte[] snapshot)
         {
             _simulation.pushSnapshot(snapshot);

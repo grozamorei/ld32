@@ -38,13 +38,15 @@ namespace game.ui
         public Image seedButtonSkin;
         
         public GameObject target;
-        public Color targetColor;
+        public GameObject seedTarget;
 
         private MainProxy _game;
         private GameObject _targetInstance;
+        private GameObject _seedTargetInstance;
         private WorldSimulation _sim;
         
         private float bombCooldown = float.MaxValue;
+        private float seedCooldown = float.MaxValue;
         
         public void hide()
         {
@@ -63,6 +65,10 @@ namespace game.ui
             
             _targetInstance = Instantiate(target);
             _targetInstance.transform.position = new Vector3(-100f, 100f);
+            
+            _seedTargetInstance = Instantiate(seedTarget);
+            _seedTargetInstance.transform.position = new Vector3(-100f, 100f);
+            
             _sim = FindObjectOfType<WorldSimulation>();
         }
         
@@ -80,15 +86,24 @@ namespace game.ui
         
         public void onBombDeployed()
         {
-            bombButtonText.text = "Bomb ready";
-            bombState = BombState.WAITING;
             _sim.attachToDrag2(null);
             _targetInstance.transform.position = new Vector3(-100f, 100f);
             
             bombCooldown = Time.timeSinceLevelLoad + 5f;
             bombState = BombState.RECHARGE;
-            bombButtonText.text = "Recharge..";
+            bombButtonText.text = "Charging";
             bombButton.interactable = false;
+        }
+        
+        public void onSeedDeployed()
+        {
+            _sim.attachToDrag3(null);
+            _seedTargetInstance.transform.position = new Vector3(-100f, 100f);
+            
+            seedCooldown = Time.timeSinceLevelLoad + 5f;
+            seedState = SeedState.RECHARGE;
+            seedButtonText.text = "Charging";
+            seedButton.interactable = false;
         }
         
         public void onBombClick()
@@ -119,13 +134,13 @@ namespace game.ui
             case SeedState.WAITING:
                 seedButtonText.text = "Cancel deploy";
                 seedState = SeedState.SEED_DEPLOY;
-                //_sim.attachToDrag2(_targetInstance);
+                _sim.attachToDrag3(_seedTargetInstance);
                 break;
             case SeedState.SEED_DEPLOY:
                 seedButtonText.text = "Seed ready";
                 seedState = SeedState.WAITING;
-                //_sim.attachToDrag2(null);
-                //_targetInstance.transform.position = new Vector3(-100f, 100f);
+                _sim.attachToDrag3(null);
+                _seedTargetInstance.transform.position = new Vector3(-100f, 100f);
                 break;
             case SeedState.RECHARGE:
                 break;
@@ -140,6 +155,14 @@ namespace game.ui
                 bombState = BombState.WAITING;
                 bombButtonText.text = "Bomb ready";
                 bombButton.interactable = true;
+            }
+            
+            if (seedCooldown < Time.timeSinceLevelLoad)
+            {
+                seedCooldown = float.MaxValue;
+                seedState = SeedState.WAITING;
+                seedButtonText.text = "Seed ready";
+                seedButton.interactable = true;
             }
         }
     }

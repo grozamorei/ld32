@@ -47,10 +47,12 @@ namespace game.board
         private Transform tempObject;
         
         private Transform targetObject;
+        private Transform seedTargetObject;
         private Dictionary<byte, Color> colors;
         
         bool canDeployDebug = false;
         bool canBombDeploy = false;
+        bool canSeedDeploy = false;
         
         public void attach(GameObject cellPrefab, int[] figure)
         {
@@ -91,6 +93,23 @@ namespace game.board
                 targetObject = null;
             }
         }
+        
+        public void attach3(GameObject target)
+        {
+            if (target != null)
+            {
+                seedTargetObject = target.transform;
+                var ss = seedTargetObject.GetComponentsInChildren<SpriteRenderer>();
+                foreach (var s in ss)
+                {
+                    s.color = colors[myId];
+                }
+            }
+            else
+            {
+                seedTargetObject = null;
+            }
+        }
 
         public void update ()
         {
@@ -116,6 +135,7 @@ namespace game.board
                 camAnchor = _cam.transform.position;
                 scale = Screen.width / (Mathf.Abs(_cam.transform.position.z) * 2f);
                 
+                canSeedDeploy = seedTargetObject != null;
                 canBombDeploy = targetObject != null;
                 canDeployDebug = tempObject != null;
                 return;
@@ -138,6 +158,18 @@ namespace game.board
                         fat.gameObject.GetComponent<FatmanHandler>().init(w);
                         _mainP.deployBomb(Mathf.FloorToInt(-w.y)  * _board.maxX + Mathf.FloorToInt(w.x));
                         _abHook.onBombDeployed();
+                    }
+                    if (seedTargetObject != null && canSeedDeploy)
+                    {
+                        if (_abHook == null)
+                            _abHook = GameObject.FindObjectOfType<AbilitiesMenuHook>();
+                        
+                        
+                        var w = seedTargetObject.position;
+                        w.z += zoomLevels[currentZoom] - 1;
+                        Debug.Log("deploy seed at: " + w);
+                        _mainP.deploySeed(Mathf.FloorToInt(-w.y)  * _board.maxX + Mathf.FloorToInt(w.x));
+                        _abHook.onSeedDeployed();
                     }
                     else
                     if (figure != null && canDeployDebug)
@@ -240,6 +272,14 @@ namespace game.board
                 v3.z = -_cam.transform.position.z;
                 v3 = Camera.main.ScreenToWorldPoint(v3);
                 targetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, 0);
+            }
+            
+            if (seedTargetObject != null)
+            {
+                var v3 = Input.mousePosition;
+                v3.z = -_cam.transform.position.z;
+                v3 = Camera.main.ScreenToWorldPoint(v3);
+                seedTargetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, 0);
             }
         }
     }

@@ -44,6 +44,11 @@ namespace game
             _drag.attach2(target);
         }
         
+        public void attachToDrag3(GameObject target)
+        {
+            _drag.attach3(target);
+        }
+        
         private void deployDebugConfig(List<int> config)
         {
             _game.deployDebugConfig(config);
