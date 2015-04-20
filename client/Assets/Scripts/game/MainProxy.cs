@@ -3,6 +3,7 @@ using proto;
 using net;
 using game.board;
 using System.Collections.Generic;
+using game.ui;
 
 namespace game
 {
@@ -34,6 +35,7 @@ namespace game
         private LoginScreenLogic _loginMenu;
         private CheatMenuLogic _cheatMenu;
         private WorldSimulation _simulation;
+        private AbilitiesMenuHook _abil;
         
         void Start()
         {
@@ -43,6 +45,8 @@ namespace game
             _loginMenu = gameObject.AddComponent<LoginScreenLogic>();
             _cheatMenu = gameObject.AddComponent<CheatMenuLogic>();
             _simulation = gameObject.AddComponent<WorldSimulation>();
+            _abil = FindObjectOfType<AbilitiesMenuHook>();
+            _abil.hide ();
         }
         
         public void showWelcomeData(Welcome data)
@@ -78,6 +82,8 @@ namespace game
             state = GameState.SIMULATION;
             _simulation.initialize(cellPrefab, data);
             _cheatMenu.initialize(data.sizeX, data.sizeY);
+            _abil.initialize(this);
+            _abil.show();
         }
         
         public void deployDebugConfig(List<int> config)

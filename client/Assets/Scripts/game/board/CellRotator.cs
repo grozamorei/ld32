@@ -17,7 +17,7 @@ public class CellRotator : MonoBehaviour {
     
     void Start()
     {
-        nextTime = Time.timeSinceLevelLoad + Random.Range(1f, 1f);
+        nextTime = Time.timeSinceLevelLoad + Random.Range(1f, 20f);
     }
     
     public void on()
@@ -64,19 +64,19 @@ public class CellRotator : MonoBehaviour {
             if (Time.timeSinceLevelLoad > nextTime)
             {
                 var tt = Random.Range(0, 4);
-                Debug.Log("new tt! " + tt);
+//                Debug.Log("new tt! " + tt);
                 nanoMachine.SetInteger("IdleIndex", tt);
-                nextTime = Time.timeSinceLevelLoad + 1f;//Random.Range(0.5f, 0.5f);
+                nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
                 switchTime = Time.timeSinceLevelLoad;
                 animChanged = true;
             }
             else
             {
-//                if (animChanged && Time.timeSinceLevelLoad - switchTime > 0.5f)
-//                {
-//                    nanoMachine.SetInteger("IdleIndex", -1);
-//                    animChanged = false;
-//                }
+                if (animChanged && Time.timeSinceLevelLoad - switchTime > 0.5f)
+                {
+                    nanoMachine.SetInteger("IdleIndex", -1);
+                    animChanged = false;
+                }
             }
         }
 	}
