@@ -6,7 +6,7 @@ SocketCreate: function(url)
 	var ptr = HEAPU32[url>>2];
 	var str = Pointer_stringify(ptr);
 	var socket = {
-		socket: new WebSocket(str, ['soap', 'xmpp']),
+		socket: new WebSocket(str),
 		buffer: new Uint8Array(0),
 		error: null,
 		messages: []
