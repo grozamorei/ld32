@@ -15,6 +15,7 @@ class World():
         self._step = metadata.world_step = step
         self._max_population = metadata.max_population = max_population
 
+        self.temp = []
         self._board = []
         for i in range(size_x * size_y):
             self._board.append(Cell(i))
@@ -58,7 +59,26 @@ class World():
             self._board[c].user_id = user_id
 
     def deploy_bomb(self, at_location):
-        pass
+        # pass
+        cell = self._board[at_location]
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if i == 0 and j == 0:
+                    continue
+                target_x = cell.t_x + i
+                target_y = cell.t_y + j
+
+                if target_x < 0:
+                    target_x = self._size_x-1
+                if target_x >= self._size_x:
+                    target_x = 0
+                if target_y < 0:
+                    target_y = self._size_y-1
+                if target_y >= self._size_y:
+                    target_y = 0
+
+                n = self.temp[target_x][target_y]
+                self._board[n.idx].reset()
 
     def broadcast(self, message_raw):
         for u_id in self._users:
@@ -82,18 +102,18 @@ class World():
         #
         # fight:
 
-        temp = []
+        self.temp = []
         for i in range(self._size_x):
-            temp.append([])
+            self.temp.append([])
             for j in range(self._size_y):
                 idx = j * self._size_x + i
                 c = self._board[idx]
                 c.t_x = i
                 c.t_y = j
-                temp[i].append(c.clone())
+                self.temp[i].append(c.clone())
 
         for cell in self._board:
-            hostiles = self._get_hostiles(cell, temp)
+            hostiles = self._get_hostiles(cell, self.temp)
             if len(hostiles) == 0:
                 continue
 
@@ -102,14 +122,14 @@ class World():
         for cell in self._board:
             if cell.is_dead():
                 cell.reset()
-            if temp[cell.t_x][cell.t_y].is_dead():
+            if self.temp[cell.t_x][cell.t_y].is_dead():
                 cell.reset()
 
 
         # new_board = self._board[:]
         for cell in self._board:
             if cell.user_id == 0:
-                neighbours = self._get_neighbours(cell, temp)
+                neighbours = self._get_neighbours(cell, self.temp)
                 # LOGGER.warning('NEIGH: %s : %r' % (cell.idx, neighbours))
                 if len(neighbours) == 3:
                     self._board[cell.idx].user_id = neighbours[0]
@@ -121,7 +141,7 @@ class World():
                     # self._board[cell.idx].
                     pass
             else:
-                friends = self._get_friends(cell, temp)
+                friends = self._get_friends(cell, self.temp)
                 # LOGGER.warning('friends: %s : %r' % (cell.idx, friends))
                 l = len(friends)
                 if l == 2 or l == 3:
