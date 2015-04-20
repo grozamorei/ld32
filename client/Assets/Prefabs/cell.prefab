@@ -419,7 +419,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 615ba09bf3e96f5418ddf101f116770c, type: 3}
   m_Controller: {fileID: 9100000, guid: b0710f84b5f08b84da7fbfd1bee0f129, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 360
-  nanoMachine: {fileID: 143112}
+  nanoMachine: {fileID: 9552514}
   mesh: {fileID: 13701818}
 --- !u!137 &13701818
 SkinnedMeshRenderer:

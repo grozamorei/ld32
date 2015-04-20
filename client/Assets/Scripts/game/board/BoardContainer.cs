@@ -52,6 +52,7 @@ namespace game.board
                     z.transform.position = new Vector2 (j + 0.5f, -i - 0.5f);
                     z.transform.parent = transform;
                     z.name = (i * maxX).ToString() + '_' + j.ToString();
+                    z.SetActive(false);
                     _fieldVisual[i * maxX + j] = z.GetComponent<CellRotator> ();
                 }
             }
@@ -66,7 +67,14 @@ namespace game.board
                 if (_field[i] != newField[i])
                 {
                     _field[i] = newField[i];
-                    _fieldVisual[i].runRotate(colors[_field[i]]);
+                    if (_field[i] == 0)
+                    {
+                        _fieldVisual[i].gameObject.SetActive(false);
+                    } else
+                    {
+                        _fieldVisual[i].gameObject.SetActive(true);
+                        _fieldVisual[i].runRotate(colors[_field[i]]);
+                    }
                 }
             }
         }

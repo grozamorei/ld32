@@ -8,20 +8,26 @@ public class CellRotator : MonoBehaviour {
     float endAngleAxis = 180;
     bool rotating = false;
     
-    public GameObject nanoMachine;
+    public Animator nanoMachine;
     public SkinnedMeshRenderer mesh;
     
     Color startTint = Color.white;
     Color tartetTint = Color.red;
     Color currentTint = Color.black;
     
+    float switchTime = float.MaxValue;
+    float nextTime = float.MaxValue;
+    bool animChanged = false;
+    
+    void Start()
+    {
+        nanoMachine.SetInteger("IdleIndex", -1);
+        nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
+    }
+    
     public void setColor(Color tint)
     {
         mesh.material.SetColor("_TintColor", new Color(tint.r, tint.g, tint.b, 0.5f));
-//        GetComponent<SpriteRenderer>().color = tint;
-//        Renderer rend = GetComponent<Renderer>();
-//        rend.material.shader = Shader.Find("Specular");
-//        rend.material.SetColor("_SpecColor", Color.red);
     }
     
     public void runRotate(Color tint)
@@ -35,6 +41,30 @@ public class CellRotator : MonoBehaviour {
 //        currentAngleAxis = 0;
     }
     void Update () {
+
+        if (Time.timeSinceLevelLoad > nextTime)
+        {
+            nanoMachine.SetInteger("IdleIndex", Random.Range(0, 4));
+            nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
+            switchTime = Time.timeSinceLevelLoad;
+            animChanged = true;
+        }
+        else
+        {
+            if (animChanged && Time.timeSinceLevelLoad - switchTime > 1f)
+            {
+                nanoMachine.SetInteger("IdleIndex", -1);
+                animChanged = false;
+                //Debug.Log(nanoMachine.GetCurrentAnimatorStateInfo(0).normalizedTime);
+//                nanoMachine.GetCurrentAnimatorStateInfo(0).
+//                if (nanoMachine.GetInteger("IdleIndex"))
+//                {
+//                    nanoMachine.SetInteger("IdleIndex", -1);
+//                    animChanged = false;
+//                }
+            }
+        }
+
         if (!rotating) return;
         
 	    var moveAmount = Time.smoothDeltaTime * rotationSpeed;
