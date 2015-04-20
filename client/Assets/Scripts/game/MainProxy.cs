@@ -30,6 +30,7 @@ namespace game
         public string myWorld;
         
         public GameObject cellPrefab;
+        public GameObject fatmanPrefab;
         
         private Connection _connection;
         private LoginScreenLogic _loginMenu;

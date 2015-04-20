@@ -130,7 +130,12 @@ namespace game.board
                         if (_abHook == null)
                             _abHook = GameObject.FindObjectOfType<AbilitiesMenuHook>();
                             
+                        
                         var w = targetObject.position;
+                        w.z += zoomLevels[currentZoom] - 1;
+                        Debug.Log("launch fatman at: " + w);
+                        var fat = GameObject.Instantiate(_mainP.fatmanPrefab, w, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
+                        fat.gameObject.GetComponent<FatmanHandler>().init(w);
                         _mainP.deployBomb(Mathf.FloorToInt(-w.y)  * _board.maxX + Mathf.FloorToInt(w.x));
                         _abHook.onBombDeployed();
                     }

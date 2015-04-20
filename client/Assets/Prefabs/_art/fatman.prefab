@@ -11,6 +11,9 @@ GameObject:
   - 33: {fileID: 3316048}
   - 23: {fileID: 2317660}
   - 95: {fileID: 9552240}
+  - 54: {fileID: 5489556}
+  - 65: {fileID: 6572014}
+  - 114: {fileID: 11490460}
   m_Layer: 0
   m_Name: fatman
   m_TagString: Untagged
@@ -73,8 +76,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 119240}
-  m_LocalRotation: {x: .216105074, y: 0, z: 0, w: .976370156}
-  m_LocalPosition: {x: 2, y: 8.65457726, z: -17.8902912}
+  m_LocalRotation: {x: .0871557519, y: 0, z: 0, w: .99619472}
+  m_LocalPosition: {x: 2.29999995, y: 0, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 424668}
@@ -149,6 +152,33 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 119240}
   m_Mesh: {fileID: 4300000, guid: 4792c1b7cc6c3f94088c91be30850fd5, type: 3}
+--- !u!54 &5489556
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119240}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: .0500000007
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &6572014
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119240}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: .389591038, y: .389591038, z: 1.06023252}
+  m_Center: {x: 0, y: 0, z: .532180369}
 --- !u!95 &9552240
 Animator:
   serializedVersion: 3
@@ -156,16 +186,28 @@ Animator:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 119240}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7733644e21cd7024bb9eb9e4579f20bc, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11490460
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61106c34940d0124eb4e845b4ee4af10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosion: {fileID: 135042, guid: 9d05b2ee2c2e56043b5f6826d8de6470, type: 2}
 --- !u!198 &19867270
 ParticleSystem:
   m_ObjectHideFlags: 1
