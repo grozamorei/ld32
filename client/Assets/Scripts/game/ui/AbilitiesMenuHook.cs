@@ -48,6 +48,9 @@ namespace game.ui
         private float bombCooldown = float.MaxValue;
         private float seedCooldown = float.MaxValue;
         
+        private bool firstBombClick = true;
+        private bool firstSeedClick = true;
+        
         public void hide()
         {
             root.gameObject.SetActive(false);
@@ -108,6 +111,18 @@ namespace game.ui
         
         public void onBombClick()
         {
+            if (firstBombClick)
+            {
+                var au = Camera.main.GetComponents<AudioSource>();
+                foreach (var a in au)
+                {
+                    if (a.clip.name == "deploy_bomb_hint")
+                    {
+                        a.Play();
+                    }
+                }
+                firstBombClick = false;
+            }
             switch(bombState)
             {
                 case BombState.WAITING:
@@ -129,6 +144,18 @@ namespace game.ui
         
         public void onSeedClick()
         {
+            if (firstSeedClick)
+            {
+                var au = Camera.main.GetComponents<AudioSource>();
+                foreach (var a in au)
+                {
+                    if (a.clip.name == "deploy_seed_hint")
+                    {
+                        a.Play();
+                    }
+                }
+                firstSeedClick = false;
+            }
             switch(seedState)
             {
             case SeedState.WAITING:
