@@ -49,7 +49,9 @@ namespace game.ui
         private float seedCooldown = float.MaxValue;
         
         private bool firstBombClick = true;
+        private bool firstBombDeploy = true;
         private bool firstSeedClick = true;
+        private bool firstSeedDeploy = true;
         
         public void hide()
         {
@@ -89,6 +91,22 @@ namespace game.ui
         
         public void onBombDeployed()
         {
+            if (firstBombDeploy)
+            {
+                var au = Camera.main.GetComponents<AudioSource>();
+                foreach (var a in au)
+                {
+                    if (a.clip.name != "music")
+                    {
+                        a.Stop();
+                    }
+                    if (a.clip.name == "deploy_bomb_launched")
+                    {
+                        a.Play();
+                    }
+                }
+                firstBombDeploy = false;
+            }
             _sim.attachToDrag2(null);
             _targetInstance.transform.position = new Vector3(-100f, 100f);
             
@@ -100,6 +118,22 @@ namespace game.ui
         
         public void onSeedDeployed()
         {
+            if (firstSeedDeploy)
+            {
+                var au = Camera.main.GetComponents<AudioSource>();
+                foreach (var a in au)
+                {
+                    if (a.clip.name != "music")
+                    {
+                        a.Stop();
+                    }
+                    if (a.clip.name == "deploy_seed_launched")
+                    {
+                        a.Play();
+                    }
+                }
+                firstSeedDeploy = false;
+            }
             _sim.attachToDrag3(null);
             _seedTargetInstance.transform.position = new Vector3(-100f, 100f);
             
@@ -116,6 +150,10 @@ namespace game.ui
                 var au = Camera.main.GetComponents<AudioSource>();
                 foreach (var a in au)
                 {
+                    if (a.clip.name != "music")
+                    {
+                        a.Stop();
+                    }
                     if (a.clip.name == "deploy_bomb_hint")
                     {
                         a.Play();
@@ -149,6 +187,10 @@ namespace game.ui
                 var au = Camera.main.GetComponents<AudioSource>();
                 foreach (var a in au)
                 {
+                    if (a.clip.name != "music")
+                    {
+                        a.Stop();
+                    }
                     if (a.clip.name == "deploy_seed_hint")
                     {
                         a.Play();
