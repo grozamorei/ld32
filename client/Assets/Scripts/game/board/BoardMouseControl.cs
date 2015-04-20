@@ -18,6 +18,10 @@ namespace game.board
         }
         
         private bool drag = false;
+        private bool zooming = false;
+        private float[] zoomLevels = new float[]{-4f, -8f, -12f, -16f};
+        private int currentZoom = 1;
+        
         private Vector3 dragAnchor;
         private Vector3 camAnchor;
         private float scale;
@@ -49,12 +53,27 @@ namespace game.board
 
         public void update ()
         {
+            if (zooming)
+            {
+                Vector3 pos = _cam.transform.position;
+                if (Mathf.Abs(pos.z - zoomLevels[currentZoom]) < 0.05f)
+                {
+                    _cam.transform.position = new Vector3(pos.x, pos.y, zoomLevels[currentZoom]);
+                    zooming = false;
+                }
+                else
+                {
+                    _cam.transform.position = new Vector3(pos.x, pos.y, Mathf.Lerp(pos.z, zoomLevels[currentZoom], 0.16f));
+                    return;
+                }
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
                 drag = true;
                 dragAnchor = Input.mousePosition;
                 camAnchor = _cam.transform.position;
-                scale = Screen.width / (_cam.orthographicSize * 2);
+                scale = Screen.width / (Mathf.Abs(_cam.transform.position.z) * 2f);
                 return;
             }
             
@@ -89,15 +108,63 @@ namespace game.board
                 _cam.transform.position = new Vector3(camAnchor.x + worldCoordDiff.x, camAnchor.y + worldCoordDiff.y, _cam.transform.position.z);
                 return;
             }
+            else
+            {
+                var xy = new Vector2(_cam.transform.position.x, _cam.transform.position.y);
+                var s = (Mathf.Abs(_cam.transform.position.z));
+                float newX = xy.x;
+                float newY = xy.y;
+                if (xy.x < s*2)
+                {
+                    if (Mathf.Abs(xy.x - s*2) < 0.005f)
+                        newX = s*2;
+                    else
+                        newX = Mathf.Lerp(xy.x, s*2, 0.08f);
+                }
+                else
+                if (xy.x > _board.maxX - s*2)
+                {
+                    if (Mathf.Abs(xy.x - (_board.maxX - s*2)) < 0.005f)
+                        newX = _board.maxX - s*2;
+                    else
+                        newX = Mathf.Lerp(xy.x, _board.maxX - s*2, 0.08f);
+                }
+                
+                if (xy.y > -s)
+                {
+                    if (Mathf.Abs(xy.y - s) < 0.005f)
+                        newY = -s;
+                    else
+                        newY = Mathf.Lerp(xy.y, -s, 0.08f);
+                }
+                else
+                if (xy.y < -(_board.maxY - s))
+                {
+                    if (Mathf.Abs(xy.y - (_board.maxY - s)) < 0.005f)
+                        newY = -(_board.maxY - s);
+                    else
+                        newY = Mathf.Lerp(xy.y, -(_board.maxY - s), 0.08f);
+                }
+                
+                _cam.transform.position = new Vector3(newX, newY, _cam.transform.position.z);
+            }
             
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
-                _cam.orthographicSize -= 0.5f;
+                if (currentZoom > 0)
+                {
+                    zooming = true;
+                    currentZoom -= 1;
+                }
             }
             else
             if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
-                _cam.orthographicSize += 0.5f;
+                if (currentZoom < 3)
+                {
+                    zooming = true;
+                    currentZoom += 1;
+                }
             }
             
             if (figure != null && figure.Length > 0)
@@ -105,7 +172,6 @@ namespace game.board
                 var w = _cam.ScreenToWorldPoint(Input.mousePosition);
                 w.x = Mathf.Floor(w.x);
                 w.y = Mathf.Ceil(w.y);
-                //Debug.Log(w);
                 if (tempObject != null)
                 {
                     tempObject.position = new Vector3(w.x, w.y);
