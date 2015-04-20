@@ -11,9 +11,9 @@ GameObject:
   - 33: {fileID: 3362738}
   - 64: {fileID: 6491662}
   - 23: {fileID: 2344734}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: background
-  m_TagString: Untagged
+  m_TagString: background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25,8 +25,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 192346}
   m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106709}
-  m_LocalPosition: {x: 31.9899998, y: -31.8799992, z: 0}
-  m_LocalScale: {x: 7.18700027, y: 7.18699741, z: 7.18699741}
+  m_LocalPosition: {x: 30, y: -30, z: 30}
+  m_LocalScale: {x: 20, y: 1, z: 20}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -69,7 +69,7 @@ MeshCollider:
   m_GameObject: {fileID: 192346}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Convex: 0
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
