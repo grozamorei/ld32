@@ -91,6 +91,11 @@ namespace game
             _connection.debugDeploy(config);
         }
         
+        public void deployBomb(int location)
+        {
+            Debug.Log("dropping bomb in: " + location);
+        }
+        
         public void pushSnapshot(byte[] snapshot)
         {
             _simulation.pushSnapshot(snapshot);

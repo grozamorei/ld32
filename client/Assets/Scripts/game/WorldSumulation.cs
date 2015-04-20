@@ -39,6 +39,11 @@ namespace game
             _drag.attach(_cellPrefab, figure);
         }
         
+        public void attachToDrag2(GameObject target)
+        {
+            _drag.attach2(target);
+        }
+        
         private void deployDebugConfig(List<int> config)
         {
             _game.deployDebugConfig(config);

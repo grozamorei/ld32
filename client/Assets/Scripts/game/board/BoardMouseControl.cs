@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using game.ui;
 
 namespace game.board
 {
@@ -10,6 +11,8 @@ namespace game.board
         public delegate void onDeploy(List<int> value);
         private onDeploy _onDeploy;
         private byte myId;
+        private AbilitiesMenuHook _abHook;
+        private MainProxy _mainP;
 
         public void initialize(byte myId, Camera cam, BoardContainer board, onDeploy call)
         {
@@ -17,6 +20,19 @@ namespace game.board
             _cam = cam;
             _board = board;
             _onDeploy = call;
+            
+            colors = new Dictionary<byte, Color>();
+            colors.Add(0, Color.white);
+            colors.Add(1, Color.red);
+            colors.Add(2, Color.green);
+            colors.Add(3, Color.blue);
+            colors.Add(4, Color.gray);
+            colors.Add(5, Color.cyan);
+            colors.Add(6, Color.magenta);
+            colors.Add(7, Color.yellow);
+            colors.Add(8, Color.white);
+            
+            _mainP = GameObject.FindObjectOfType<MainProxy>();
         }
         
         private bool drag = false;
@@ -30,19 +46,11 @@ namespace game.board
         private int[] figure;
         private Transform tempObject;
         
+        private Transform targetObject;
+        private Dictionary<byte, Color> colors;
+        
         public void attach(GameObject cellPrefab, int[] figure)
         {
-            var colors = new Dictionary<byte, Color>();
-            colors.Add(0, Color.white);
-            colors.Add(1, Color.red);
-            colors.Add(2, Color.green);
-            colors.Add(3, Color.blue);
-            colors.Add(4, Color.gray);
-            colors.Add(5, Color.cyan);
-            colors.Add(6, Color.magenta);
-            colors.Add(7, Color.yellow);
-            colors.Add(8, Color.white);
-
             if (tempObject != null)
                 GameObject.DestroyImmediate(tempObject.gameObject);
             if (figure != null && figure.Length > 0)
@@ -62,6 +70,23 @@ namespace game.board
                 }
             }
             this.figure = figure;
+        }
+        
+        public void attach2(GameObject target)
+        {
+            if (target != null)
+            {
+                targetObject = target.transform;
+                var ss = targetObject.GetComponentsInChildren<SpriteRenderer>();
+                foreach (var s in ss)
+                {
+                    s.color = colors[myId];
+                }
+            }
+            else
+            {
+                targetObject = null;
+            }
         }
 
         public void update ()
@@ -94,12 +119,19 @@ namespace game.board
             {
                 if (Input.mousePosition == dragAnchor)
                 {
-                    //click
+                    if (targetObject != null)
+                    {
+                        if (_abHook == null)
+                            _abHook = GameObject.FindObjectOfType<AbilitiesMenuHook>();
+                            
+                        var w = targetObject.position;
+                        _mainP.deployBomb(Mathf.FloorToInt(-w.y)  * _board.maxX + Mathf.FloorToInt(w.x));
+                        _abHook.onBombDeployed();
+                    }
+                    else
                     if (figure != null)
                     {
                         var w = tempObject.position;
-//                        w.x = Mathf.Floor(w.x);
-//                        w.y = Mathf.Abs(Mathf.Ceil(w.y));
                             var t = new List<int>();
                         for (int i = 0; i < figure.Length; i+=2)
                         {
@@ -109,13 +141,6 @@ namespace game.board
                             t.Add(coord);
                         }
                         _onDeploy(t);
-//                        var v3 = Input.mousePosition;
-//                        v3.z = -_cam.transform.position.z;
-//                        v3 = Camera.main.ScreenToWorldPoint(v3);
-//                        if (tempObject != null)
-//                        {
-//                            tempObject.position = new Vector3(Mathf.Floor(v3.x), Mathf.Ceil(v3.y));
-//                        }
                     }
                 }
                 drag = false;
@@ -196,6 +221,14 @@ namespace game.board
                 {
                     tempObject.position = new Vector3(Mathf.Floor(v3.x), Mathf.Ceil(v3.y));
                 }
+            }
+            
+            if (targetObject != null)
+            {
+                var v3 = Input.mousePosition;
+                v3.z = -_cam.transform.position.z;
+                v3 = Camera.main.ScreenToWorldPoint(v3);
+                targetObject.position = new Vector3(Mathf.Floor(v3.x) + 0.5f, Mathf.Ceil(v3.y) - 0.5f, 0);
             }
         }
     }

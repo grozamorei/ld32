@@ -21,8 +21,13 @@ namespace game.ui
         public Text buttonText;
         public Button button;
         public Image buttonSkin;
+        
+        public GameObject target;
+        public Color targetColor;
 
         private MainProxy _game;
+        private GameObject _targetInstance;
+        private WorldSimulation _sim;
         
         public void hide()
         {
@@ -38,6 +43,10 @@ namespace game.ui
         {
             _game = game;
             onPoinerExit();
+            
+            _targetInstance = Instantiate(target);
+            _targetInstance.transform.position = new Vector3(-100f, 100f);
+            _sim = FindObjectOfType<WorldSimulation>();
         }
         
         public void onPointerEnter()
@@ -50,6 +59,12 @@ namespace game.ui
             buttonSkin.color = new Color(1f, 1f, 1f, 0.3f);
         }
         
+        public void onBombDeployed()
+        {
+            //Debug.Log("deployBombHere");
+            // launch cooldowns
+        }
+        
         public void onClick()
         {
             switch(state)
@@ -57,10 +72,13 @@ namespace game.ui
                 case AbilState.WAITING:
                     buttonText.text = "Cancel deploy";
                     state = AbilState.BOMB_DEPLOY;
+                    _sim.attachToDrag2(_targetInstance);
                     break;
                 case AbilState.BOMB_DEPLOY:
                     buttonText.text = "Bomb ready";
                     state = AbilState.WAITING;
+                    _sim.attachToDrag2(null);
+                    _targetInstance.transform.position = new Vector3(-100f, 100f);
                     break;
                 case AbilState.RECHARGE:
                     Debug.LogWarning("recharge");
