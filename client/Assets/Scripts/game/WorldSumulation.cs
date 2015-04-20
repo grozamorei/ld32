@@ -64,6 +64,15 @@ namespace game
             _board.pushSeed(location, owner_id);
         }
 
+        public void pushBomb (int target)
+        {
+            //_board.pushBomb(target);
+            var w = _board._fieldVisual[target].transform.position;
+            w.z += _drag.zoomLevels[_drag.currentZoom] - 1;
+            var fat = GameObject.Instantiate(_game.fatmanPrefab, w, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
+            fat.gameObject.GetComponent<FatmanHandler>().init(w);
+        }
+
         public void destroySeed (int location)
         {
             _board.destroySeed(location);

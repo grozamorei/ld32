@@ -81,12 +81,46 @@ class DebugPackage(BaseMessage):
         self.message = values[5].strip()
 
 
-class RequestEnterWorld(BaseMessage):
+class DeployBomb(BaseMessage):
     ID = 1
 
     @property
     def id(self):
         return 1
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        self.target = -1
+
+        self._format += " i"
+        self._struct = struct.Struct(self._format)
+
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
+        values.append(self.target)
+        p_len += 4
+        fmt += " i"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
+        self.target = values[2]
+
+
+class RequestEnterWorld(BaseMessage):
+    ID = 2
+
+    @property
+    def id(self):
+        return 2
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -106,11 +140,11 @@ class RequestEnterWorld(BaseMessage):
 
 
 class DebugDeployConfiguration(BaseMessage):
-    ID = 2
+    ID = 3
 
     @property
     def id(self):
-        return 2
+        return 3
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -127,28 +161,6 @@ class DebugDeployConfiguration(BaseMessage):
         self._length = values[0]
         self._real_id = values[1]
         self.configuration = list(values[3:])
-
-class DeployBomb(BaseMessage):
-    ID = 3
-
-    @property
-    def id(self):
-        return 3
-
-    def __init__(self):
-        BaseMessage.__init__(self)
-        self.target = -1
-
-        self._format += " i"
-        self._struct = struct.Struct(self._format)
-
-    def unpack_from(self, raw):
-        values = self._struct.unpack(raw)
-        self._length = values[0]
-        self._real_id = values[1]
-
-        self.target = values[2]
-
 
 class DeploySeed(BaseMessage):
     ID = 4

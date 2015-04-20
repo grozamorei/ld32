@@ -112,6 +112,12 @@ namespace game
         {
             _simulation.pushSeed(location, ownerId);
         }
+
+        public void pushBomb (int target)
+        {
+            //throw new NotImplementedException ();
+            _simulation.pushBomb(target);
+        }
         
         public void destroySeed(int location)
         {

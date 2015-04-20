@@ -123,6 +123,12 @@ class World():
         for u_id in self._users:
             self._users[u_id].ws.write_message(message_raw, True)
 
+    def broadcast_but(self, message_raw, my_id):
+        for u_id in self._users:
+            if u_id == my_id:
+                continue
+            self._users[u_id].ws.write_message(message_raw, True)
+
     def step(self, dt):
         if self.is_empty:
             return

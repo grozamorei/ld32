@@ -17,6 +17,11 @@
         [ "message", "string", 120 ]
     ],
 
+    [
+        "deploy_bomb",
+        "common",
+        [ "target", "int" ]
+    ],
 
     [
         "request_enter_world",
@@ -29,12 +34,6 @@
         "debug_deploy_configuration",
         "client",
         [ "configuration", "int[]" ]
-    ],
-
-    [
-        "deploy_bomb",
-        "client",
-        [ "target", "int" ]
     ],
 
     [

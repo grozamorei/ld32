@@ -17,7 +17,7 @@ namespace game.board
     
         private GameObject _cellSprite;
         private byte[] _field;
-        private CellRotator[] _fieldVisual;
+        public CellRotator[] _fieldVisual;
         private MainProxy _mainP;
         private GameObject seedPrefab;
         

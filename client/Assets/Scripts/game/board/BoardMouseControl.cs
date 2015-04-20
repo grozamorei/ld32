@@ -37,8 +37,8 @@ namespace game.board
         
         private bool drag = false;
         private bool zooming = false;
-        private float[] zoomLevels = new float[]{-4f, -8f, -12f, -16f};
-        private int currentZoom = 1;
+        public float[] zoomLevels = new float[]{-4f, -8f, -12f, -16f};
+        public int currentZoom = 1;
         
         private Vector3 dragAnchor;
         private Vector3 camAnchor;

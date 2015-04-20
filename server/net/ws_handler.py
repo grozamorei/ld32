@@ -103,6 +103,7 @@ class WSHandler(WebSocketHandler):
                 LOGGER.info('%s deployed bomb at %i' % (self._user.name, d.target, ))
 
                 self._world.deploy_bomb(d.target)
+                self._world.broadcast_but(d.encode_self(), self._user.byte_id)
             elif message_id == DeploySeed.ID:
                 d = DeploySeed()
                 d.unpack_from(message)

@@ -86,10 +86,33 @@ namespace proto
         }
     }
 
-    public class RequestEnterWorld : BaseMessage
+    public class DeployBomb : BaseMessage
     {
         public static byte ID { get { return 1; } }
         public override byte getID() { return 1; }
+        public readonly int target;
+    
+        public DeployBomb( int target )
+        {
+            initSendStream();
+            this.target = target;
+        }
+        public DeployBomb(byte[] source)
+        {
+            initReceiveStream(source);
+            target = reader.ReadInt32();
+        }
+        public byte[] encode()
+        {
+            writer.Write(target);
+            return wrapCommand();
+        }
+    }
+
+    public class RequestEnterWorld : BaseMessage
+    {
+        public static byte ID { get { return 2; } }
+        public override byte getID() { return 2; }
         public readonly string userName;
         public readonly string worldName;
     
@@ -109,8 +132,8 @@ namespace proto
 
     public class DebugDeployConfiguration : BaseMessage
     {
-        public static byte ID { get { return 2; } }
-        public override byte getID() { return 2; }
+        public static byte ID { get { return 3; } }
+        public override byte getID() { return 3; }
         public readonly int[] configuration;
     
         public DebugDeployConfiguration( int[] configuration )
@@ -124,24 +147,6 @@ namespace proto
             for (int i = 0; i < configuration.Length; i++)
                 writer.Write(configuration[i]);
 
-            return wrapCommand();
-        }
-    }
-
-    public class DeployBomb : BaseMessage
-    {
-        public static byte ID { get { return 3; } }
-        public override byte getID() { return 3; }
-        public readonly int target;
-    
-        public DeployBomb( int target )
-        {
-            initSendStream();
-            this.target = target;
-        }
-        public byte[] encode()
-        {
-            writer.Write(target);
             return wrapCommand();
         }
     }

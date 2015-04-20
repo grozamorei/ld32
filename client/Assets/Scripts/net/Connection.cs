@@ -174,6 +174,13 @@ namespace net
                     Debug.Log("seed dest: " + seedD.location);
                     _game.destroySeed(seedD.location);
                 }
+                else
+                if (data[4] == DeployBomb.ID)
+                {
+                    var enemy_bomb = new DeployBomb(data);
+                    Debug.Log("enemy bomb: " + enemy_bomb.target);
+                    _game.pushBomb(enemy_bomb.target);
+                }
             }
         }
         
