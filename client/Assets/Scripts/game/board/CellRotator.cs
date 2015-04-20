@@ -3,11 +3,6 @@ using System.Collections;
 
 public class CellRotator : MonoBehaviour {
 
-    public float rotationSpeed = 180f;
-    float currentAngleAxis = 0;
-    float endAngleAxis = 180;
-    bool rotating = false;
-    
     public Animator nanoMachine;
     public SkinnedMeshRenderer mesh;
     
@@ -18,18 +13,29 @@ public class CellRotator : MonoBehaviour {
     float switchTime = float.MaxValue;
     float nextTime = float.MaxValue;
     bool animChanged = false;
+    float deathTime = float.MaxValue;
     
     void Start()
     {
-        nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
+        nextTime = Time.timeSinceLevelLoad + Random.Range(1f, 1f);
     }
     
     public void on()
     {
+        if (nanoMachine.gameObject.activeSelf)
+            nanoMachine.SetBool("death", false);
         nanoMachine.gameObject.SetActive(true);
     }
     
     public void off()
+    {
+//        if (nanoMachine.gameObject.activeSelf)
+//            nanoMachine.SetBool("death", true);
+//        deathTime = Time.timeSinceLevelLoad;
+        instantOff();
+    }
+    
+    public void instantOff()
     {
         nanoMachine.gameObject.SetActive(false);
     }
@@ -41,53 +47,37 @@ public class CellRotator : MonoBehaviour {
     
     public void runRotate(Color tint)
     {
-        if (rotating) return;
         mesh.material.SetColor("_TintColor", new Color(tint.r, tint.g, tint.b, 0.5f));
-//        startTint = GetComponent<SpriteRenderer>().color;
-//        currentTint = startTint;
-//        tartetTint = tint;
-//        rotating = true;
-//        currentAngleAxis = 0;
     }
     void Update () {
 
         if (nanoMachine.gameObject.activeSelf)
         {
+            if (nanoMachine.GetBool("death"))
+            {
+                if (Time.timeSinceLevelLoad - deathTime > 0.8f)
+                {
+                    instantOff();
+                    return;
+                }
+            }
             if (Time.timeSinceLevelLoad > nextTime)
             {
-                nanoMachine.SetInteger("IdleIndex", Random.Range(0, 4));
-                nextTime = Time.timeSinceLevelLoad + Random.Range(4f, 20f);
+                var tt = Random.Range(0, 4);
+                Debug.Log("new tt! " + tt);
+                nanoMachine.SetInteger("IdleIndex", tt);
+                nextTime = Time.timeSinceLevelLoad + 1f;//Random.Range(0.5f, 0.5f);
                 switchTime = Time.timeSinceLevelLoad;
                 animChanged = true;
             }
             else
             {
-                if (animChanged && Time.timeSinceLevelLoad - switchTime > 1f)
-                {
-                    nanoMachine.SetInteger("IdleIndex", -1);
-                    animChanged = false;
-                }
+//                if (animChanged && Time.timeSinceLevelLoad - switchTime > 0.5f)
+//                {
+//                    nanoMachine.SetInteger("IdleIndex", -1);
+//                    animChanged = false;
+//                }
             }
         }
-        
-
-//        if (!rotating) return;
-//        
-//	    var moveAmount = Time.smoothDeltaTime * rotationSpeed;
-//        var nextAxis = currentAngleAxis + moveAmount;
-//        
-//        transform.rotation = Quaternion.AngleAxis(nextAxis, new Vector3(1f, 1f));
-//        currentAngleAxis = nextAxis;
-//        if (currentAngleAxis >= endAngleAxis/2 && currentTint == startTint)
-//        {
-//            GetComponent<SpriteRenderer>().color = tartetTint;
-//            currentTint = tartetTint;
-//        }
-//        if (currentAngleAxis >= endAngleAxis)
-//        {
-//            currentAngleAxis = 0;
-//            rotating = false;
-//            startTint = currentTint;
-//        }
 	}
 }

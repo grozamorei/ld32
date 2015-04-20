@@ -53,7 +53,7 @@ namespace game.board
                     z.transform.parent = transform;
                     z.name = (i * maxX).ToString() + '_' + j.ToString();
                     _fieldVisual[i * maxX + j] = z.GetComponent<CellRotator> ();
-                    _fieldVisual[i * maxX + j].off();
+                    _fieldVisual[i * maxX + j].instantOff();
                 }
             }
             
