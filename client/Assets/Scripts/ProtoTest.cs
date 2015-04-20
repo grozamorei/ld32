@@ -128,10 +128,28 @@ namespace proto
         }
     }
 
-    public class Welcome : BaseMessage
+    public class DeployBomb : BaseMessage
     {
         public static byte ID { get { return 3; } }
         public override byte getID() { return 3; }
+        public readonly int target;
+    
+        public DeployBomb( int target )
+        {
+            initSendStream();
+            this.target = target;
+        }
+        public byte[] encode()
+        {
+            writer.Write(target);
+            return wrapCommand();
+        }
+    }
+
+    public class Welcome : BaseMessage
+    {
+        public static byte ID { get { return 4; } }
+        public override byte getID() { return 4; }
         public readonly string availableName;
         public readonly string randomWorld;
     
@@ -145,8 +163,8 @@ namespace proto
 
     public class ResponseEnterWorld : BaseMessage
     {
-        public static byte ID { get { return 4; } }
-        public override byte getID() { return 4; }
+        public static byte ID { get { return 5; } }
+        public override byte getID() { return 5; }
         public readonly EnterWorldStatus status;
         public readonly byte myId;
     
@@ -160,8 +178,8 @@ namespace proto
 
     public class WorldData : BaseMessage
     {
-        public static byte ID { get { return 5; } }
-        public override byte getID() { return 5; }
+        public static byte ID { get { return 6; } }
+        public override byte getID() { return 6; }
         public readonly string name;
         public readonly short worldStep;
         public readonly short sizeX;
@@ -181,8 +199,8 @@ namespace proto
 
     public class WorldSnapshot : BaseMessage
     {
-        public static byte ID { get { return 6; } }
-        public override byte getID() { return 6; }
+        public static byte ID { get { return 7; } }
+        public override byte getID() { return 7; }
         public readonly string snapshot;
     
         public WorldSnapshot(byte[] source)

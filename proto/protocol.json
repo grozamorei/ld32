@@ -31,6 +31,12 @@
         [ "configuration", "int[]" ]
     ],
 
+    [
+        "deploy_bomb",
+        "client",
+        [ "target", "int" ]
+    ],
+
 
 
     [

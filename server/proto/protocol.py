@@ -128,12 +128,34 @@ class DebugDeployConfiguration(BaseMessage):
         self._real_id = values[1]
         self.configuration = list(values[3:])
 
-class Welcome(BaseMessage):
+class DeployBomb(BaseMessage):
     ID = 3
 
     @property
     def id(self):
         return 3
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        self.target = -1
+
+        self._format += " i"
+        self._struct = struct.Struct(self._format)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
+        self.target = values[2]
+
+
+class Welcome(BaseMessage):
+    ID = 4
+
+    @property
+    def id(self):
+        return 4
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -178,11 +200,11 @@ class Welcome(BaseMessage):
 
 
 class ResponseEnterWorld(BaseMessage):
-    ID = 4
+    ID = 5
 
     @property
     def id(self):
-        return 4
+        return 5
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -209,11 +231,11 @@ class ResponseEnterWorld(BaseMessage):
 
 
 class WorldData(BaseMessage):
-    ID = 5
+    ID = 6
 
     @property
     def id(self):
-        return 5
+        return 6
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -262,11 +284,11 @@ class WorldData(BaseMessage):
 
 
 class WorldSnapshot(BaseMessage):
-    ID = 6
+    ID = 7
 
     @property
     def id(self):
-        return 6
+        return 7
 
     def __init__(self):
         BaseMessage.__init__(self)
