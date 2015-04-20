@@ -189,9 +189,10 @@ class World():
                     self._board[cell.idx].reset()
                     cell.reset()
 
-        # for i in range(self._size_x):
-        #     for j in range(self._size_y):
-        #         self._board[j * self._size_x + i] = new_board[i][j]
+        for u_id in self._users:
+            for s in self._users[u_id].seeds:
+                if s.can_spawn():
+                    s.spawn(self._board, self._size_x)
 
     def _get_hostiles(self, cell, board2d):
         hostiles = []
