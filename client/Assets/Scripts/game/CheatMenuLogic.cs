@@ -43,7 +43,7 @@ namespace game
             
             if (Input.GetKeyDown(KeyCode.C))
             {
-                _uiHook.toggleContent();
+                //_uiHook.toggleContent();
             }
         }
     }
