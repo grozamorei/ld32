@@ -25,7 +25,7 @@ class Game():
 if __name__ == '__main__':
     logging.basicConfig(format='%(levelname)s::%(asctime)s {%(module)s:%(lineno)d} :: %(message)s ::',
                         datefmt='[%d.%m.%Y %I:%M:%S]', level=20)
-    Game().start(3000, 2000)
+    Game().start(3000, 1500)
 
     # raw = ''.join(str(x) for x in [2, 2, 2, 2, 2, 2, 2, 2, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     # c = zlib.compress(raw)
