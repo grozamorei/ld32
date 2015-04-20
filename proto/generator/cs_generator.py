@@ -192,6 +192,8 @@ class CSGenerator(BaseGenerator):
                 return 'ReadByte'
             if field_type == 'short':
                 return 'ReadInt16'
+            if field_type == 'int':
+                return 'ReadInt32'
             if field_type == 'string':
                 return 'ReadString'
             if field_type in ['string[]', 'byte[]', 'short[]']:

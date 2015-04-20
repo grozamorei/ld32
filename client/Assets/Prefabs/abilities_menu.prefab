@@ -419,7 +419,7 @@ MonoBehaviour:
   seedButton: {fileID: 11489050}
   seedButtonSkin: {fileID: 11418468}
   target: {fileID: 125918, guid: ed4abd5cd010f734b811e1a9b030f6a7, type: 2}
-  targetColor: {r: .784313738, g: 0, b: 0, a: .784313738}
+  seedTarget: {fileID: 190850, guid: 702eac8b5649f414e8a0b85b14b86b71, type: 2}
 --- !u!114 &11466066
 MonoBehaviour:
   m_ObjectHideFlags: 1

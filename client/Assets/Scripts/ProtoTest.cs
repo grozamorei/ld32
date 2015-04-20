@@ -146,10 +146,49 @@ namespace proto
         }
     }
 
-    public class Welcome : BaseMessage
+    public class DeploySeed : BaseMessage
     {
         public static byte ID { get { return 4; } }
         public override byte getID() { return 4; }
+        public readonly int target;
+    
+        public DeploySeed( int target )
+        {
+            initSendStream();
+            this.target = target;
+        }
+        public byte[] encode()
+        {
+            writer.Write(target);
+            return wrapCommand();
+        }
+    }
+
+    public class SeedPreset : BaseMessage
+    {
+        public static byte ID { get { return 5; } }
+        public override byte getID() { return 5; }
+        public readonly int seedLocation;
+        public readonly byte seedPreset;
+    
+        public SeedPreset( int seedLocation, byte seedPreset )
+        {
+            initSendStream();
+            this.seedLocation = seedLocation;
+            this.seedPreset = seedPreset;
+        }
+        public byte[] encode()
+        {
+            writer.Write(seedLocation);
+            writer.Write(seedPreset);
+            return wrapCommand();
+        }
+    }
+
+    public class Welcome : BaseMessage
+    {
+        public static byte ID { get { return 6; } }
+        public override byte getID() { return 6; }
         public readonly string availableName;
         public readonly string randomWorld;
     
@@ -163,8 +202,8 @@ namespace proto
 
     public class ResponseEnterWorld : BaseMessage
     {
-        public static byte ID { get { return 5; } }
-        public override byte getID() { return 5; }
+        public static byte ID { get { return 7; } }
+        public override byte getID() { return 7; }
         public readonly EnterWorldStatus status;
         public readonly byte myId;
     
@@ -178,8 +217,8 @@ namespace proto
 
     public class WorldData : BaseMessage
     {
-        public static byte ID { get { return 6; } }
-        public override byte getID() { return 6; }
+        public static byte ID { get { return 8; } }
+        public override byte getID() { return 8; }
         public readonly string name;
         public readonly short worldStep;
         public readonly short sizeX;
@@ -199,8 +238,8 @@ namespace proto
 
     public class WorldSnapshot : BaseMessage
     {
-        public static byte ID { get { return 7; } }
-        public override byte getID() { return 7; }
+        public static byte ID { get { return 9; } }
+        public override byte getID() { return 9; }
         public readonly string snapshot;
     
         public WorldSnapshot(byte[] source)
@@ -209,6 +248,34 @@ namespace proto
             var len = reader.ReadInt16();
             char[] strRaw = reader.ReadChars(len);
             snapshot = new string(strRaw);
+        }
+    }
+
+    public class NewSeed : BaseMessage
+    {
+        public static byte ID { get { return 10; } }
+        public override byte getID() { return 10; }
+        public readonly int location;
+        public readonly byte owner;
+    
+        public NewSeed(byte[] source)
+        {
+            initReceiveStream(source);
+            location = reader.ReadInt32();
+            owner = reader.ReadByte();
+        }
+    }
+
+    public class SeedDestroyed : BaseMessage
+    {
+        public static byte ID { get { return 11; } }
+        public override byte getID() { return 11; }
+        public readonly int location;
+    
+        public SeedDestroyed(byte[] source)
+        {
+            initReceiveStream(source);
+            location = reader.ReadInt32();
         }
     }
 

@@ -37,6 +37,19 @@
         [ "target", "int" ]
     ],
 
+    [
+        "deploy_seed",
+        "client",
+        [ "target", "int" ]
+    ],
+
+    [
+        "seed_preset",
+        "client",
+        [ "seed_location", "int" ],
+        [ "seed_preset", "byte" ]
+    ],
+
 
 
     [
@@ -67,5 +80,18 @@
         "world_snapshot",
         "server",
         [ "snapshot", "string", "long" ]
+    ],
+
+    [
+        "new_seed",
+        "server",
+        [ "location", "int" ],
+        [ "owner", "byte" ]
+    ],
+
+    [
+        "seed_destroyed",
+        "server",
+        [ "location", "int" ]
     ]
 ]

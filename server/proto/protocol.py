@@ -150,12 +150,58 @@ class DeployBomb(BaseMessage):
         self.target = values[2]
 
 
-class Welcome(BaseMessage):
+class DeploySeed(BaseMessage):
     ID = 4
 
     @property
     def id(self):
         return 4
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        self.target = -1
+
+        self._format += " i"
+        self._struct = struct.Struct(self._format)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
+        self.target = values[2]
+
+
+class SeedPreset(BaseMessage):
+    ID = 5
+
+    @property
+    def id(self):
+        return 5
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        self.seed_location = -1
+        self.seed_preset = -1
+
+        self._format += " i b"
+        self._struct = struct.Struct(self._format)
+
+    def unpack_from(self, raw):
+        values = self._struct.unpack(raw)
+        self._length = values[0]
+        self._real_id = values[1]
+
+        self.seed_location = values[2]
+        self.seed_preset = values[3]
+
+
+class Welcome(BaseMessage):
+    ID = 6
+
+    @property
+    def id(self):
+        return 6
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -200,11 +246,11 @@ class Welcome(BaseMessage):
 
 
 class ResponseEnterWorld(BaseMessage):
-    ID = 5
+    ID = 7
 
     @property
     def id(self):
-        return 5
+        return 7
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -231,11 +277,11 @@ class ResponseEnterWorld(BaseMessage):
 
 
 class WorldData(BaseMessage):
-    ID = 6
+    ID = 8
 
     @property
     def id(self):
-        return 6
+        return 8
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -284,11 +330,11 @@ class WorldData(BaseMessage):
 
 
 class WorldSnapshot(BaseMessage):
-    ID = 7
+    ID = 9
 
     @property
     def id(self):
-        return 7
+        return 9
 
     def __init__(self):
         BaseMessage.__init__(self)
@@ -309,6 +355,64 @@ class WorldSnapshot(BaseMessage):
         fmt += " h"
         values.append(new_str)
         fmt += " " + str(len(new_str)) + "s"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
+
+
+class NewSeed(BaseMessage):
+    ID = 10
+
+    @property
+    def id(self):
+        return 10
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        self.location = -1
+        self.owner = -1
+
+        self._format += " i b"
+        self._struct = struct.Struct(self._format)
+
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
+        values.append(self.location)
+        p_len += 4
+        fmt += " i"
+        values.append(self.owner)
+        p_len += 1
+        fmt += " b"
+
+        values[0] = p_len
+        return struct.pack(fmt, *values)
+
+
+class SeedDestroyed(BaseMessage):
+    ID = 11
+
+    @property
+    def id(self):
+        return 11
+
+    def __init__(self):
+        BaseMessage.__init__(self)
+        self.location = -1
+
+        self._format += " i"
+        self._struct = struct.Struct(self._format)
+
+    def encode_self(self):
+        # noinspection PyListCreation
+        values = [0, self.id]
+        p_len = 0
+        fmt = "<i b"
+        values.append(self.location)
+        p_len += 4
+        fmt += " i"
 
         values[0] = p_len
         return struct.pack(fmt, *values)
